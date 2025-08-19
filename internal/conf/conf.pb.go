@@ -29,6 +29,7 @@ type Bootstrap struct {
 	Jwt           *Jwt                   `protobuf:"bytes,3,opt,name=jwt,proto3" json:"jwt,omitempty"`
 	Auth          *Auth                  `protobuf:"bytes,4,opt,name=auth,proto3" json:"auth,omitempty"`
 	Data          *Data                  `protobuf:"bytes,5,opt,name=data,proto3" json:"data,omitempty"`
+	NodeId        int64                  `protobuf:"varint,6,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -96,6 +97,13 @@ func (x *Bootstrap) GetData() *Data {
 		return x.Data
 	}
 	return nil
+}
+
+func (x *Bootstrap) GetNodeId() int64 {
+	if x != nil {
+		return x.NodeId
+	}
+	return 0
 }
 
 type Server struct {
@@ -919,13 +927,14 @@ var File_conf_conf_proto protoreflect.FileDescriptor
 const file_conf_conf_proto_rawDesc = "" +
 	"\n" +
 	"\x0fconf/conf.proto\x12\n" +
-	"kratos.api\x1a\x1egoogle/protobuf/duration.proto\"\xd2\x01\n" +
+	"kratos.api\x1a\x1egoogle/protobuf/duration.proto\"\xeb\x01\n" +
 	"\tBootstrap\x12*\n" +
 	"\x06server\x18\x01 \x01(\v2\x12.kratos.api.ServerR\x06server\x12*\n" +
 	"\x06logger\x18\x02 \x01(\v2\x12.kratos.api.LoggerR\x06logger\x12!\n" +
 	"\x03jwt\x18\x03 \x01(\v2\x0f.kratos.api.JwtR\x03jwt\x12$\n" +
 	"\x04auth\x18\x04 \x01(\v2\x10.kratos.api.AuthR\x04auth\x12$\n" +
-	"\x04data\x18\x05 \x01(\v2\x10.kratos.api.DataR\x04data\"\xb8\x02\n" +
+	"\x04data\x18\x05 \x01(\v2\x10.kratos.api.DataR\x04data\x12\x17\n" +
+	"\anode_id\x18\x06 \x01(\x03R\x06nodeId\"\xb8\x02\n" +
 	"\x06Server\x12+\n" +
 	"\x04http\x18\x01 \x01(\v2\x17.kratos.api.Server.HTTPR\x04http\x12+\n" +
 	"\x04grpc\x18\x02 \x01(\v2\x17.kratos.api.Server.GRPCR\x04grpc\x1ai\n" +

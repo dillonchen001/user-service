@@ -7,6 +7,7 @@ import (
 	"user-service/internal/biz"
 	"user-service/internal/conf"
 	"user-service/third_party/jwt"
+	"user-service/third_party/snowflake"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -14,6 +15,7 @@ import (
 type LoginService struct {
 	v1.UnimplementedAuthServiceServer
 	log             *log.Helper
+	uidGen          *snowflake.Node
 	phoneService    *PhoneService
 	facebookService *FacebookService
 	appleService    *AppleService
@@ -22,16 +24,17 @@ type LoginService struct {
 	jwtGenerator    *jwt.Generator
 }
 
-func NewLoginService(cfg *conf.Jwt, logger log.Logger, userAuthCase *biz.UserAuthCase, userCase *biz.UserCase) *LoginService {
+func NewLoginService(cfg *conf.Jwt, logger log.Logger, uidGen *snowflake.Node, userAuthCase *biz.UserAuthCase, userCase *biz.UserCase) *LoginService {
 	jwtGenerator := jwt.NewGenerator(cfg.Secret, int(cfg.Expires))
 
 	return &LoginService{
 		log:             log.NewHelper(logger),
-		phoneService:    NewPhoneService(cfg, logger, userCase),
-		facebookService: NewFacebookService(cfg, logger, userAuthCase, userCase),
-		appleService:    NewAppleService(cfg, logger, userAuthCase),
-		googleService:   NewGoogleService(cfg, logger, userAuthCase, userCase),
-		snapchatService: NewSnapchatService(cfg, logger, userAuthCase, userCase),
+		uidGen:          uidGen,
+		phoneService:    NewPhoneService(cfg, logger, uidGen, userCase),
+		facebookService: NewFacebookService(cfg, logger, uidGen, userAuthCase, userCase),
+		appleService:    NewAppleService(cfg, logger, uidGen, userAuthCase),
+		googleService:   NewGoogleService(cfg, logger, uidGen, userAuthCase, userCase),
+		snapchatService: NewSnapchatService(cfg, logger, uidGen, userAuthCase, userCase),
 		jwtGenerator:    jwtGenerator,
 	}
 }

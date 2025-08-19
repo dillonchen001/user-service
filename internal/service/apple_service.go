@@ -17,6 +17,7 @@ import (
 	"user-service/internal/biz"
 	"user-service/internal/conf"
 	"user-service/third_party/jwt"
+	"user-service/third_party/snowflake"
 
 	"github.com/go-kratos/kratos/v2/log"
 	jwtv4 "github.com/golang-jwt/jwt/v4" // 添加别名
@@ -25,16 +26,18 @@ import (
 type AppleService struct {
 	cfg        *conf.Jwt
 	log        *log.Helper
+	uidGen     *snowflake.Node
 	authCase   *biz.UserAuthCase
 	jwtGen     *jwt.Generator
 	httpClient *http.Client
 	publicKeys map[string]*rsa.PublicKey
 }
 
-func NewAppleService(cfg *conf.Jwt, logger log.Logger, authCase *biz.UserAuthCase) *AppleService {
+func NewAppleService(cfg *conf.Jwt, logger log.Logger, uidGen *snowflake.Node, authCase *biz.UserAuthCase) *AppleService {
 	return &AppleService{
 		cfg:        cfg,
 		log:        log.NewHelper(logger),
+		uidGen:     uidGen,
 		authCase:   authCase,
 		jwtGen:     jwt.NewGenerator(cfg.Secret, int(cfg.Expires)),
 		httpClient: &http.Client{Timeout: 10 * time.Second},
@@ -65,7 +68,7 @@ func (s *AppleService) Login(ctx context.Context, req *v1.LoginWithAppleRequest)
 	}
 
 	// 查找或创建用户
-	u, isNew, err := s.authCase.FindOrCreateByAppleID(ctx, claims.Sub, claims.Email)
+	u, isNew, err := s.authCase.FindOrCreateByAppleID(ctx, s.uidGen, claims.Sub, claims.Email)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to find or create user: %w", err)

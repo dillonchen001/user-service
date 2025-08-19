@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"user-service/internal/conf"
+	"user-service/third_party/snowflake"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
@@ -74,7 +75,13 @@ func main() {
 		panic(err)
 	}
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Jwt, logger)
+	// uid generate, todo 获取consul_id 注册的node id
+	uidGen, err := snowflake.NewNode(bc.NodeId)
+	if err != nil {
+		panic(err)
+	}
+
+	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Jwt, uidGen, logger)
 	if err != nil {
 		panic(err)
 	}

@@ -14,6 +14,7 @@ import (
 	"user-service/internal/data"
 	"user-service/internal/server"
 	"user-service/internal/service"
+	"user-service/third_party/snowflake"
 )
 
 import (
@@ -23,7 +24,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, jwt *conf.Jwt, logger log.Logger) (*kratos.App, func(), error) {
+func wireApp(confServer *conf.Server, confData *conf.Data, jwt *conf.Jwt, node *snowflake.Node, logger log.Logger) (*kratos.App, func(), error) {
 	dataData, cleanup, err := data.NewData(confData, logger)
 	if err != nil {
 		return nil, nil, err
@@ -31,11 +32,11 @@ func wireApp(confServer *conf.Server, confData *conf.Data, jwt *conf.Jwt, logger
 	greeterRepo := data.NewGreeterRepo(dataData, logger)
 	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
 	greeterService := service.NewGreeterService(greeterUsecase)
-	userRepo := data.NewUserRepo(dataData, logger)
+	userRepo := data.NewUserRepo(dataData, logger, node)
 	authProviderRepo := data.NewAuthProviderRepo(dataData, logger)
 	userAuthCase := biz.NewUserAuthCase(userRepo, authProviderRepo, logger)
 	userCase := biz.NewUserCase(userRepo, logger)
-	loginService := service.NewLoginService(jwt, logger, userAuthCase, userCase)
+	loginService := service.NewLoginService(jwt, logger, node, userAuthCase, userCase)
 	grpcServer := server.NewGRPCServer(confServer, greeterService, loginService, logger)
 	httpServer := server.NewHTTPServer(confServer, greeterService, loginService, logger)
 	app := newApp(logger, grpcServer, httpServer)

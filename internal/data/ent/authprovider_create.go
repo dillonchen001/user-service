@@ -21,6 +21,12 @@ type AuthProviderCreate struct {
 	hooks    []Hook
 }
 
+// SetUserID sets the "user_id" field.
+func (_c *AuthProviderCreate) SetUserID(v int64) *AuthProviderCreate {
+	_c.mutation.SetUserID(v)
+	return _c
+}
+
 // SetProviderType sets the "provider_type" field.
 func (_c *AuthProviderCreate) SetProviderType(v string) *AuthProviderCreate {
 	_c.mutation.SetProviderType(v)
@@ -47,14 +53,20 @@ func (_c *AuthProviderCreate) SetNillableCreatedAt(v *time.Time) *AuthProviderCr
 	return _c
 }
 
+// SetID sets the "id" field.
+func (_c *AuthProviderCreate) SetID(v int64) *AuthProviderCreate {
+	_c.mutation.SetID(v)
+	return _c
+}
+
 // SetUserID sets the "user" edge to the User entity by ID.
-func (_c *AuthProviderCreate) SetUserID(id string) *AuthProviderCreate {
+func (_c *AuthProviderCreate) SetUserID(id int64) *AuthProviderCreate {
 	_c.mutation.SetUserID(id)
 	return _c
 }
 
 // SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (_c *AuthProviderCreate) SetNillableUserID(id *string) *AuthProviderCreate {
+func (_c *AuthProviderCreate) SetNillableUserID(id *int64) *AuthProviderCreate {
 	if id != nil {
 		_c = _c.SetUserID(*id)
 	}
@@ -109,6 +121,9 @@ func (_c *AuthProviderCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *AuthProviderCreate) check() error {
+	if _, ok := _c.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "AuthProvider.user_id"`)}
+	}
 	if _, ok := _c.mutation.ProviderType(); !ok {
 		return &ValidationError{Name: "provider_type", err: errors.New(`ent: missing required field "AuthProvider.provider_type"`)}
 	}
@@ -142,8 +157,10 @@ func (_c *AuthProviderCreate) sqlSave(ctx context.Context) (*AuthProvider, error
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
 	return _node, nil
@@ -152,8 +169,16 @@ func (_c *AuthProviderCreate) sqlSave(ctx context.Context) (*AuthProvider, error
 func (_c *AuthProviderCreate) createSpec() (*AuthProvider, *sqlgraph.CreateSpec) {
 	var (
 		_node = &AuthProvider{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(authprovider.Table, sqlgraph.NewFieldSpec(authprovider.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(authprovider.Table, sqlgraph.NewFieldSpec(authprovider.FieldID, field.TypeInt64))
 	)
+	if id, ok := _c.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
+	if value, ok := _c.mutation.UserID(); ok {
+		_spec.SetField(authprovider.FieldUserID, field.TypeInt64, value)
+		_node.UserID = value
+	}
 	if value, ok := _c.mutation.ProviderType(); ok {
 		_spec.SetField(authprovider.FieldProviderType, field.TypeString, value)
 		_node.ProviderType = value
@@ -174,7 +199,7 @@ func (_c *AuthProviderCreate) createSpec() (*AuthProvider, *sqlgraph.CreateSpec)
 			Columns: []string{authprovider.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -231,9 +256,9 @@ func (_c *AuthProviderCreateBulk) Save(ctx context.Context) ([]*AuthProvider, er
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

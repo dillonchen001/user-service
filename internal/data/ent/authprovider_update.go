@@ -29,6 +29,27 @@ func (_u *AuthProviderUpdate) Where(ps ...predicate.AuthProvider) *AuthProviderU
 	return _u
 }
 
+// SetUserID sets the "user_id" field.
+func (_u *AuthProviderUpdate) SetUserID(v int64) *AuthProviderUpdate {
+	_u.mutation.ResetUserID()
+	_u.mutation.SetUserID(v)
+	return _u
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (_u *AuthProviderUpdate) SetNillableUserID(v *int64) *AuthProviderUpdate {
+	if v != nil {
+		_u.SetUserID(*v)
+	}
+	return _u
+}
+
+// AddUserID adds value to the "user_id" field.
+func (_u *AuthProviderUpdate) AddUserID(v int64) *AuthProviderUpdate {
+	_u.mutation.AddUserID(v)
+	return _u
+}
+
 // SetProviderType sets the "provider_type" field.
 func (_u *AuthProviderUpdate) SetProviderType(v string) *AuthProviderUpdate {
 	_u.mutation.SetProviderType(v)
@@ -72,13 +93,13 @@ func (_u *AuthProviderUpdate) SetNillableCreatedAt(v *time.Time) *AuthProviderUp
 }
 
 // SetUserID sets the "user" edge to the User entity by ID.
-func (_u *AuthProviderUpdate) SetUserID(id string) *AuthProviderUpdate {
+func (_u *AuthProviderUpdate) SetUserID(id int64) *AuthProviderUpdate {
 	_u.mutation.SetUserID(id)
 	return _u
 }
 
 // SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (_u *AuthProviderUpdate) SetNillableUserID(id *string) *AuthProviderUpdate {
+func (_u *AuthProviderUpdate) SetNillableUserID(id *int64) *AuthProviderUpdate {
 	if id != nil {
 		_u = _u.SetUserID(*id)
 	}
@@ -147,13 +168,19 @@ func (_u *AuthProviderUpdate) sqlSave(ctx context.Context) (_node int, err error
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(authprovider.Table, authprovider.Columns, sqlgraph.NewFieldSpec(authprovider.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(authprovider.Table, authprovider.Columns, sqlgraph.NewFieldSpec(authprovider.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UserID(); ok {
+		_spec.SetField(authprovider.FieldUserID, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedUserID(); ok {
+		_spec.AddField(authprovider.FieldUserID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.ProviderType(); ok {
 		_spec.SetField(authprovider.FieldProviderType, field.TypeString, value)
@@ -172,7 +199,7 @@ func (_u *AuthProviderUpdate) sqlSave(ctx context.Context) (_node int, err error
 			Columns: []string{authprovider.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -185,7 +212,7 @@ func (_u *AuthProviderUpdate) sqlSave(ctx context.Context) (_node int, err error
 			Columns: []string{authprovider.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -211,6 +238,27 @@ type AuthProviderUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *AuthProviderMutation
+}
+
+// SetUserID sets the "user_id" field.
+func (_u *AuthProviderUpdateOne) SetUserID(v int64) *AuthProviderUpdateOne {
+	_u.mutation.ResetUserID()
+	_u.mutation.SetUserID(v)
+	return _u
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (_u *AuthProviderUpdateOne) SetNillableUserID(v *int64) *AuthProviderUpdateOne {
+	if v != nil {
+		_u.SetUserID(*v)
+	}
+	return _u
+}
+
+// AddUserID adds value to the "user_id" field.
+func (_u *AuthProviderUpdateOne) AddUserID(v int64) *AuthProviderUpdateOne {
+	_u.mutation.AddUserID(v)
+	return _u
 }
 
 // SetProviderType sets the "provider_type" field.
@@ -256,13 +304,13 @@ func (_u *AuthProviderUpdateOne) SetNillableCreatedAt(v *time.Time) *AuthProvide
 }
 
 // SetUserID sets the "user" edge to the User entity by ID.
-func (_u *AuthProviderUpdateOne) SetUserID(id string) *AuthProviderUpdateOne {
+func (_u *AuthProviderUpdateOne) SetUserID(id int64) *AuthProviderUpdateOne {
 	_u.mutation.SetUserID(id)
 	return _u
 }
 
 // SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (_u *AuthProviderUpdateOne) SetNillableUserID(id *string) *AuthProviderUpdateOne {
+func (_u *AuthProviderUpdateOne) SetNillableUserID(id *int64) *AuthProviderUpdateOne {
 	if id != nil {
 		_u = _u.SetUserID(*id)
 	}
@@ -344,7 +392,7 @@ func (_u *AuthProviderUpdateOne) sqlSave(ctx context.Context) (_node *AuthProvid
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(authprovider.Table, authprovider.Columns, sqlgraph.NewFieldSpec(authprovider.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(authprovider.Table, authprovider.Columns, sqlgraph.NewFieldSpec(authprovider.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AuthProvider.id" for update`)}
@@ -369,6 +417,12 @@ func (_u *AuthProviderUpdateOne) sqlSave(ctx context.Context) (_node *AuthProvid
 			}
 		}
 	}
+	if value, ok := _u.mutation.UserID(); ok {
+		_spec.SetField(authprovider.FieldUserID, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedUserID(); ok {
+		_spec.AddField(authprovider.FieldUserID, field.TypeInt64, value)
+	}
 	if value, ok := _u.mutation.ProviderType(); ok {
 		_spec.SetField(authprovider.FieldProviderType, field.TypeString, value)
 	}
@@ -386,7 +440,7 @@ func (_u *AuthProviderUpdateOne) sqlSave(ctx context.Context) (_node *AuthProvid
 			Columns: []string{authprovider.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -399,7 +453,7 @@ func (_u *AuthProviderUpdateOne) sqlSave(ctx context.Context) (_node *AuthProvid
 			Columns: []string{authprovider.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

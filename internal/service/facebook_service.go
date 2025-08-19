@@ -13,6 +13,7 @@ import (
 	"user-service/internal/biz"
 	"user-service/internal/conf"
 	"user-service/third_party/jwt"
+	"user-service/third_party/snowflake"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -20,16 +21,18 @@ import (
 type FacebookService struct {
 	cfg          *conf.Jwt
 	log          *log.Helper
+	uidGen       *snowflake.Node
 	userAuthCase *biz.UserAuthCase
 	userCase     *biz.UserCase
 	jwt          *jwt.Generator
 	httpClient   *http.Client
 }
 
-func NewFacebookService(cfg *conf.Jwt, logger log.Logger, userAuthCase *biz.UserAuthCase, userCase *biz.UserCase) *FacebookService {
+func NewFacebookService(cfg *conf.Jwt, logger log.Logger, uidGen *snowflake.Node, userAuthCase *biz.UserAuthCase, userCase *biz.UserCase) *FacebookService {
 	return &FacebookService{
 		cfg:          cfg,
 		log:          log.NewHelper(logger),
+		uidGen:       uidGen,
 		userAuthCase: userAuthCase,
 		userCase:     userCase,
 		jwt:          jwt.NewGenerator(cfg.Secret, int(cfg.Expires)),
@@ -62,7 +65,7 @@ func (s *FacebookService) Login(ctx context.Context, req *v1.LoginWithFacebookRe
 	}
 
 	// 查找或创建用户
-	u, isNew, err := s.userAuthCase.FindOrCreateByFacebookID(ctx, userInfo.Id, userInfo.Name, userInfo.Email)
+	u, isNew, err := s.userAuthCase.FindOrCreateByFacebookID(ctx, s.uidGen, userInfo.Id, userInfo.Name, userInfo.Email)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find or create user: %w", err)
 	}

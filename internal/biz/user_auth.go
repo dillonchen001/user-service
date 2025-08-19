@@ -23,7 +23,7 @@ func NewUserAuthCase(userRepo UserRepo, authRepo AuthProviderRepo, logger log.Lo
 }
 
 // LinkAuthProvider 关联认证提供者
-func (uc *UserAuthCase) LinkAuthProvider(ctx context.Context, userID string, providerType string, providerID string) error {
+func (uc *UserAuthCase) LinkAuthProvider(ctx context.Context, userID int64, providerType, providerID string) error {
 	uc.log.WithContext(ctx).Infof("LinkAuthProvider: %v %v %v", userID, providerType, providerID)
 	// 首先确认用户存在
 	userInfo, err := uc.userRepo.FindByIDOrigin(ctx, userID)
@@ -32,7 +32,7 @@ func (uc *UserAuthCase) LinkAuthProvider(ctx context.Context, userID string, pro
 	}
 
 	// 创建认证提供者记录
-	return uc.authRepo.Create(ctx, providerType, userID, userInfo)
+	return uc.authRepo.Create(ctx, providerType, providerID, userInfo)
 }
 
 // FindOrCreateByGoogleID 根据Google ID查找或创建用户
@@ -49,7 +49,7 @@ func (uc *UserAuthCase) FindOrCreateByGoogleID(ctx context.Context, googleID, na
 		return nil, true, err
 	}
 
-	err = uc.LinkAuthProvider(ctx, createdUser.ID, "google", googleID)
+	err = uc.LinkAuthProvider(ctx, createdUser.UserID, "google", googleID)
 	if err != nil {
 		return nil, true, err
 	}
@@ -76,7 +76,7 @@ func (uc *UserAuthCase) FindOrCreateByAppleID(ctx context.Context, appleID strin
 	}
 
 	// 关联Apple ID和新创建的用户
-	err = uc.LinkAuthProvider(ctx, createdUser.ID, "apple", appleID)
+	err = uc.LinkAuthProvider(ctx, createdUser.UserID, "apple", appleID)
 	if err != nil {
 		return nil, true, err
 	}
@@ -102,7 +102,7 @@ func (uc *UserAuthCase) FindOrCreateByFacebookID(ctx context.Context, facebookID
 	}
 
 	// 关联Facebook ID和新创建的用户
-	err = uc.LinkAuthProvider(ctx, createdUser.ID, "facebook", facebookID)
+	err = uc.LinkAuthProvider(ctx, createdUser.UserID, "facebook", facebookID)
 	if err != nil {
 		return nil, true, err
 	}
@@ -128,7 +128,7 @@ func (uc *UserAuthCase) FindOrCreateBySnapchatID(ctx context.Context, snapchatID
 	}
 
 	// 关联Facebook ID和新创建的用户
-	err = uc.LinkAuthProvider(ctx, createdUser.ID, "snapchat", snapchatID)
+	err = uc.LinkAuthProvider(ctx, createdUser.UserID, "snapchat", snapchatID)
 	if err != nil {
 		return nil, true, err
 	}

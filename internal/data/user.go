@@ -2,38 +2,41 @@ package data
 
 import (
 	"context"
-	"user-service/internal/data/ent"
 
 	"user-service/internal/biz"
+	"user-service/internal/data/ent"
 	"user-service/internal/data/ent/user"
+	"user-service/third_party/snowflake"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
 
 type userRepo struct {
-	data *Data
-	log  *log.Helper
+	data   *Data
+	log    *log.Helper
+	uidGen *snowflake.Node
 }
 
 // NewUserRepo 创建新的用户仓储
-func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
+func NewUserRepo(data *Data, logger log.Logger, uidGen *snowflake.Node) biz.UserRepo {
 	return &userRepo{
-		data: data,
-		log:  log.NewHelper(logger),
+		data:   data,
+		log:    log.NewHelper(logger),
+		uidGen: uidGen,
 	}
 }
 
-// FindByIDOrigin 根据ID查找用户, 原始输出
-func (r *userRepo) FindByIDOrigin(ctx context.Context, id string) (*ent.User, error) {
+// FindByIDOrigin 根据user_id查找用户, 原始输出
+func (r *userRepo) FindByIDOrigin(ctx context.Context, userID int64) (*ent.User, error) {
 	return r.data.db.User.Query().
-		Where(user.ID(id)).
+		Where(user.UserID(userID)).
 		First(ctx)
 }
 
-// FindByID 根据ID查找用户
-func (r *userRepo) FindByID(ctx context.Context, id string) (*biz.User, error) {
+// FindByID 根据user_id查找用户
+func (r *userRepo) FindByID(ctx context.Context, userID int64) (*biz.User, error) {
 	u, err := r.data.db.User.Query().
-		Where(user.ID(id)).
+		Where(user.UserID(userID)).
 		First(ctx)
 	if err != nil {
 		return nil, err
@@ -41,6 +44,7 @@ func (r *userRepo) FindByID(ctx context.Context, id string) (*biz.User, error) {
 
 	return &biz.User{
 		ID:        u.ID,
+		UserID:    u.UserID,
 		Name:      u.Name,
 		Email:     u.Email,
 		Phone:     u.Phone,
@@ -61,6 +65,7 @@ func (r *userRepo) FindByPhone(ctx context.Context, phone string) (*biz.User, er
 
 	return &biz.User{
 		ID:        u.ID,
+		UserID:    u.UserID,
 		Name:      u.Name,
 		Email:     u.Email,
 		Phone:     u.Phone,
@@ -81,6 +86,7 @@ func (r *userRepo) FindByEmail(ctx context.Context, email string) (*biz.User, er
 
 	return &biz.User{
 		ID:        u.ID,
+		UserID:    u.UserID,
 		Name:      u.Name,
 		Email:     u.Email,
 		Phone:     u.Phone,
@@ -93,6 +99,7 @@ func (r *userRepo) FindByEmail(ctx context.Context, email string) (*biz.User, er
 // Create 创建用户
 func (r *userRepo) Create(ctx context.Context, u *biz.User) (*biz.User, error) {
 	created, err := r.data.db.User.Create().
+		SetUserID(r.uidGen.Generate().Int64()).
 		SetName(u.Name).
 		SetEmail(u.Email).
 		SetPhone(u.Phone).
@@ -104,6 +111,7 @@ func (r *userRepo) Create(ctx context.Context, u *biz.User) (*biz.User, error) {
 
 	return &biz.User{
 		ID:        created.ID,
+		UserID:    created.UserID,
 		Name:      created.Name,
 		Email:     created.Email,
 		Phone:     created.Phone,
@@ -127,6 +135,7 @@ func (r *userRepo) Update(ctx context.Context, u *biz.User) (*biz.User, error) {
 
 	return &biz.User{
 		ID:        updated.ID,
+		UserID:    updated.UserID,
 		Name:      updated.Name,
 		Email:     updated.Email,
 		Phone:     updated.Phone,
@@ -146,6 +155,7 @@ func (r *userRepo) FindOrCreate(ctx context.Context, u *biz.User) (*biz.User, er
 		// 用户已存在，返回找到的用户
 		return &biz.User{
 			ID:        found.ID,
+			UserID:    found.UserID,
 			Name:      found.Name,
 			Email:     found.Email,
 			Phone:     found.Phone,
@@ -169,6 +179,7 @@ func (r *userRepo) FindOrCreateByPhone(ctx context.Context, phone string) (*biz.
 		// 用户已存在，返回找到的用户
 		return &biz.User{
 			ID:        found.ID,
+			UserID:    found.UserID,
 			Name:      found.Name,
 			Email:     found.Email,
 			Phone:     found.Phone,

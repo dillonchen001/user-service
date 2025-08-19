@@ -16,6 +16,10 @@ type AuthProvider struct {
 // Fields of the AuthProvider.
 func (AuthProvider) Fields() []ent.Field {
 	return []ent.Field{
+		field.Int64("id").
+			Unique(),
+		field.Int64("user_id").
+			Unique(),
 		field.String("provider_type").
 			MaxLen(20),
 		field.String("provider_id").

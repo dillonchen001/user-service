@@ -10,11 +10,12 @@ import (
 var (
 	// AuthProvidersColumns holds the columns for the "auth_providers" table.
 	AuthProvidersColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "user_id", Type: field.TypeInt64, Unique: true},
 		{Name: "provider_type", Type: field.TypeString, Size: 20},
 		{Name: "provider_id", Type: field.TypeString, Size: 100},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "user_auth_providers", Type: field.TypeString, Nullable: true},
+		{Name: "user_auth_providers", Type: field.TypeInt64, Nullable: true},
 	}
 	// AuthProvidersTable holds the schema information for the "auth_providers" table.
 	AuthProvidersTable = &schema.Table{
@@ -24,7 +25,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "auth_providers_users_auth_providers",
-				Columns:    []*schema.Column{AuthProvidersColumns[4]},
+				Columns:    []*schema.Column{AuthProvidersColumns[5]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -32,7 +33,8 @@ var (
 	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "user_id", Type: field.TypeInt64, Unique: true},
 		{Name: "name", Type: field.TypeString, Size: 100},
 		{Name: "email", Type: field.TypeString, Unique: true, Size: 255},
 		{Name: "phone", Type: field.TypeString, Unique: true, Size: 20},

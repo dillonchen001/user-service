@@ -2,9 +2,10 @@ package biz
 
 import (
 	"context"
-	"user-service/internal/data/ent"
 
 	v1 "user-service/api/helloworld/v1"
+	"user-service/internal/data/ent"
+	"user-service/third_party/snowflake"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
@@ -18,9 +19,9 @@ var (
 // UserRepo 定义用户仓储接口
 type UserRepo interface {
 	// FindByIDOrigin 根据ID查找用户, 原始输出
-	FindByIDOrigin(ctx context.Context, id string) (*ent.User, error)
+	FindByIDOrigin(ctx context.Context, userID int64) (*ent.User, error)
 	// FindByID 根据ID查找用户
-	FindByID(ctx context.Context, id string) (*User, error)
+	FindByID(ctx context.Context, userID int64) (*User, error)
 	// FindByPhone 根据手机号查找用户
 	FindByPhone(ctx context.Context, phone string) (*User, error)
 	// FindByEmail 根据邮箱查找用户
@@ -50,9 +51,9 @@ func NewUserCase(repo UserRepo, logger log.Logger) *UserCase {
 }
 
 // FindByID find user by id
-func (uc *UserCase) FindByID(ctx context.Context, id string) (*User, error) {
-	uc.log.WithContext(ctx).Infof("FindByID: %v", id)
-	return uc.repo.FindByID(ctx, id)
+func (uc *UserCase) FindByID(ctx context.Context, userID int64) (*User, error) {
+	uc.log.WithContext(ctx).Infof("FindByID: %v", userID)
+	return uc.repo.FindByID(ctx, userID)
 }
 
 // FindByPhone 根据手机号查找用户
@@ -86,7 +87,7 @@ func (uc *UserCase) FindOrCreate(ctx context.Context, u *User) (*User, error) {
 }
 
 // FindOrCreateByPhone 根据Phone 查找或创建用户
-func (uc *UserCase) FindOrCreateByPhone(ctx context.Context, phone string) (*User, bool, error) {
+func (uc *UserCase) FindOrCreateByPhone(ctx context.Context, uidGen *snowflake.Node, phone string) (*User, bool, error) {
 	uc.log.WithContext(ctx).Infof("FindOrCreateByPhone: %v", phone)
 	return uc.repo.FindOrCreateByPhone(ctx, phone)
 }

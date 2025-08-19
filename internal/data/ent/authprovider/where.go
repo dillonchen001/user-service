@@ -11,48 +11,53 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.AuthProvider {
+func ID(id int64) predicate.AuthProvider {
 	return predicate.AuthProvider(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.AuthProvider {
+func IDEQ(id int64) predicate.AuthProvider {
 	return predicate.AuthProvider(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.AuthProvider {
+func IDNEQ(id int64) predicate.AuthProvider {
 	return predicate.AuthProvider(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.AuthProvider {
+func IDIn(ids ...int64) predicate.AuthProvider {
 	return predicate.AuthProvider(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.AuthProvider {
+func IDNotIn(ids ...int64) predicate.AuthProvider {
 	return predicate.AuthProvider(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.AuthProvider {
+func IDGT(id int64) predicate.AuthProvider {
 	return predicate.AuthProvider(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.AuthProvider {
+func IDGTE(id int64) predicate.AuthProvider {
 	return predicate.AuthProvider(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.AuthProvider {
+func IDLT(id int64) predicate.AuthProvider {
 	return predicate.AuthProvider(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.AuthProvider {
+func IDLTE(id int64) predicate.AuthProvider {
 	return predicate.AuthProvider(sql.FieldLTE(FieldID, id))
+}
+
+// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
+func UserID(v int64) predicate.AuthProvider {
+	return predicate.AuthProvider(sql.FieldEQ(FieldUserID, v))
 }
 
 // ProviderType applies equality check predicate on the "provider_type" field. It's identical to ProviderTypeEQ.
@@ -68,6 +73,46 @@ func ProviderID(v string) predicate.AuthProvider {
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.AuthProvider {
 	return predicate.AuthProvider(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// UserIDEQ applies the EQ predicate on the "user_id" field.
+func UserIDEQ(v int64) predicate.AuthProvider {
+	return predicate.AuthProvider(sql.FieldEQ(FieldUserID, v))
+}
+
+// UserIDNEQ applies the NEQ predicate on the "user_id" field.
+func UserIDNEQ(v int64) predicate.AuthProvider {
+	return predicate.AuthProvider(sql.FieldNEQ(FieldUserID, v))
+}
+
+// UserIDIn applies the In predicate on the "user_id" field.
+func UserIDIn(vs ...int64) predicate.AuthProvider {
+	return predicate.AuthProvider(sql.FieldIn(FieldUserID, vs...))
+}
+
+// UserIDNotIn applies the NotIn predicate on the "user_id" field.
+func UserIDNotIn(vs ...int64) predicate.AuthProvider {
+	return predicate.AuthProvider(sql.FieldNotIn(FieldUserID, vs...))
+}
+
+// UserIDGT applies the GT predicate on the "user_id" field.
+func UserIDGT(v int64) predicate.AuthProvider {
+	return predicate.AuthProvider(sql.FieldGT(FieldUserID, v))
+}
+
+// UserIDGTE applies the GTE predicate on the "user_id" field.
+func UserIDGTE(v int64) predicate.AuthProvider {
+	return predicate.AuthProvider(sql.FieldGTE(FieldUserID, v))
+}
+
+// UserIDLT applies the LT predicate on the "user_id" field.
+func UserIDLT(v int64) predicate.AuthProvider {
+	return predicate.AuthProvider(sql.FieldLT(FieldUserID, v))
+}
+
+// UserIDLTE applies the LTE predicate on the "user_id" field.
+func UserIDLTE(v int64) predicate.AuthProvider {
+	return predicate.AuthProvider(sql.FieldLTE(FieldUserID, v))
 }
 
 // ProviderTypeEQ applies the EQ predicate on the "provider_type" field.

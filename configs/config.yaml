@@ -35,12 +35,12 @@ auth:
 data:
   database:
     driver: mysql
-    source: root:root@tcp(127.0.0.1:3306)/test?parseTime=True&loc=Local
+    source: root:12345678@tcp(127.0.0.1:3306)/auth_db?parseTime=True&loc=Local
   redis:
     network: 
     addr: 127.0.0.1:6379
-    password: 1234
+    password: abc1234
     db: 0
-    dial_timeout = 0.1s
+    dial_timeout: 0.1s
     read_timeout: 0.2s
     write_timeout: 0.2s

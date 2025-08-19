@@ -107,8 +107,8 @@ func (_q *AuthProviderQuery) FirstX(ctx context.Context) *AuthProvider {
 
 // FirstID returns the first AuthProvider ID from the query.
 // Returns a *NotFoundError when no AuthProvider ID was found.
-func (_q *AuthProviderQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (_q *AuthProviderQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -120,7 +120,7 @@ func (_q *AuthProviderQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (_q *AuthProviderQuery) FirstIDX(ctx context.Context) int {
+func (_q *AuthProviderQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -158,8 +158,8 @@ func (_q *AuthProviderQuery) OnlyX(ctx context.Context) *AuthProvider {
 // OnlyID is like Only, but returns the only AuthProvider ID in the query.
 // Returns a *NotSingularError when more than one AuthProvider ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (_q *AuthProviderQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (_q *AuthProviderQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -175,7 +175,7 @@ func (_q *AuthProviderQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (_q *AuthProviderQuery) OnlyIDX(ctx context.Context) int {
+func (_q *AuthProviderQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -203,7 +203,7 @@ func (_q *AuthProviderQuery) AllX(ctx context.Context) []*AuthProvider {
 }
 
 // IDs executes the query and returns a list of AuthProvider IDs.
-func (_q *AuthProviderQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (_q *AuthProviderQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if _q.ctx.Unique == nil && _q.path != nil {
 		_q.Unique(true)
 	}
@@ -215,7 +215,7 @@ func (_q *AuthProviderQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (_q *AuthProviderQuery) IDsX(ctx context.Context) []int {
+func (_q *AuthProviderQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -299,12 +299,12 @@ func (_q *AuthProviderQuery) WithUser(opts ...func(*UserQuery)) *AuthProviderQue
 // Example:
 //
 //	var v []struct {
-//		ProviderType string `json:"provider_type,omitempty"`
+//		UserID int64 `json:"user_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.AuthProvider.Query().
-//		GroupBy(authprovider.FieldProviderType).
+//		GroupBy(authprovider.FieldUserID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *AuthProviderQuery) GroupBy(field string, fields ...string) *AuthProviderGroupBy {
@@ -322,11 +322,11 @@ func (_q *AuthProviderQuery) GroupBy(field string, fields ...string) *AuthProvid
 // Example:
 //
 //	var v []struct {
-//		ProviderType string `json:"provider_type,omitempty"`
+//		UserID int64 `json:"user_id,omitempty"`
 //	}
 //
 //	client.AuthProvider.Query().
-//		Select(authprovider.FieldProviderType).
+//		Select(authprovider.FieldUserID).
 //		Scan(ctx, &v)
 func (_q *AuthProviderQuery) Select(fields ...string) *AuthProviderSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
@@ -410,8 +410,8 @@ func (_q *AuthProviderQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 }
 
 func (_q *AuthProviderQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*AuthProvider, init func(*AuthProvider), assign func(*AuthProvider, *User)) error {
-	ids := make([]string, 0, len(nodes))
-	nodeids := make(map[string][]*AuthProvider)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*AuthProvider)
 	for i := range nodes {
 		if nodes[i].user_auth_providers == nil {
 			continue
@@ -452,7 +452,7 @@ func (_q *AuthProviderQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (_q *AuthProviderQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(authprovider.Table, authprovider.Columns, sqlgraph.NewFieldSpec(authprovider.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(authprovider.Table, authprovider.Columns, sqlgraph.NewFieldSpec(authprovider.FieldID, field.TypeInt64))
 	_spec.From = _q.sql
 	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

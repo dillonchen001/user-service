@@ -17,7 +17,9 @@ import (
 type AuthProvider struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
+	// UserID holds the value of the "user_id" field.
+	UserID int64 `json:"user_id,omitempty"`
 	// ProviderType holds the value of the "provider_type" field.
 	ProviderType string `json:"provider_type,omitempty"`
 	// ProviderID holds the value of the "provider_id" field.
@@ -27,7 +29,7 @@ type AuthProvider struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AuthProviderQuery when eager-loading is set.
 	Edges               AuthProviderEdges `json:"edges"`
-	user_auth_providers *string
+	user_auth_providers *int64
 	selectValues        sql.SelectValues
 }
 
@@ -56,14 +58,14 @@ func (*AuthProvider) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case authprovider.FieldID:
+		case authprovider.FieldID, authprovider.FieldUserID:
 			values[i] = new(sql.NullInt64)
 		case authprovider.FieldProviderType, authprovider.FieldProviderID:
 			values[i] = new(sql.NullString)
 		case authprovider.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
 		case authprovider.ForeignKeys[0]: // user_auth_providers
-			values[i] = new(sql.NullString)
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -84,7 +86,13 @@ func (_m *AuthProvider) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			_m.ID = int(value.Int64)
+			_m.ID = int64(value.Int64)
+		case authprovider.FieldUserID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field user_id", values[i])
+			} else if value.Valid {
+				_m.UserID = value.Int64
+			}
 		case authprovider.FieldProviderType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field provider_type", values[i])
@@ -104,11 +112,11 @@ func (_m *AuthProvider) assignValues(columns []string, values []any) error {
 				_m.CreatedAt = value.Time
 			}
 		case authprovider.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field user_auth_providers", values[i])
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field user_auth_providers", value)
 			} else if value.Valid {
-				_m.user_auth_providers = new(string)
-				*_m.user_auth_providers = value.String
+				_m.user_auth_providers = new(int64)
+				*_m.user_auth_providers = int64(value.Int64)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -151,6 +159,9 @@ func (_m *AuthProvider) String() string {
 	var builder strings.Builder
 	builder.WriteString("AuthProvider(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("user_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
+	builder.WriteString(", ")
 	builder.WriteString("provider_type=")
 	builder.WriteString(_m.ProviderType)
 	builder.WriteString(", ")

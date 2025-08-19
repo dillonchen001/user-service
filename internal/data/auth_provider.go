@@ -52,6 +52,7 @@ func (r *authProviderRepo) FindByGoogleID(ctx context.Context, googleID string) 
 	userInfo := authProvider.Edges.User
 	return &biz.User{
 		ID:        userInfo.ID,
+		UserID:    userInfo.UserID,
 		Name:      userInfo.Name,
 		Email:     userInfo.Email,
 		Phone:     userInfo.Phone,
@@ -77,6 +78,7 @@ func (r *authProviderRepo) FindByAppleID(ctx context.Context, appleID string) (*
 	userInfo := authProvider.Edges.User
 	return &biz.User{
 		ID:        userInfo.ID,
+		UserID:    userInfo.UserID,
 		Name:      userInfo.Name,
 		Email:     userInfo.Email,
 		Phone:     userInfo.Phone,
@@ -102,6 +104,7 @@ func (r *authProviderRepo) FindByFacebookID(ctx context.Context, facebookID stri
 	userInfo := authProvider.Edges.User
 	return &biz.User{
 		ID:        userInfo.ID,
+		UserID:    userInfo.UserID,
 		Name:      userInfo.Name,
 		Email:     userInfo.Email,
 		Phone:     userInfo.Phone,
@@ -127,6 +130,7 @@ func (r *authProviderRepo) FindBySnapchatID(ctx context.Context, snapchatID stri
 	userInfo := authProvider.Edges.User
 	return &biz.User{
 		ID:        userInfo.ID,
+		UserID:    userInfo.UserID,
 		Name:      userInfo.Name,
 		Email:     userInfo.Email,
 		Phone:     userInfo.Phone,
