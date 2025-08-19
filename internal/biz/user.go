@@ -3,12 +3,10 @@ package biz
 import (
 	"context"
 
-	v1 "user-service/api/helloworld/v1"
-	"user-service/internal/data/ent"
-	"user-service/third_party/snowflake"
-
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
+	v1 "user-service/api/helloworld/v1"
+	"user-service/internal/data/ent"
 )
 
 var (
@@ -87,7 +85,7 @@ func (uc *UserCase) FindOrCreate(ctx context.Context, u *User) (*User, error) {
 }
 
 // FindOrCreateByPhone 根据Phone 查找或创建用户
-func (uc *UserCase) FindOrCreateByPhone(ctx context.Context, uidGen *snowflake.Node, phone string) (*User, bool, error) {
+func (uc *UserCase) FindOrCreateByPhone(ctx context.Context, phone string) (*User, bool, error) {
 	uc.log.WithContext(ctx).Infof("FindOrCreateByPhone: %v", phone)
 	return uc.repo.FindOrCreateByPhone(ctx, phone)
 }

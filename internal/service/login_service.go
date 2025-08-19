@@ -30,11 +30,11 @@ func NewLoginService(cfg *conf.Jwt, logger log.Logger, uidGen *snowflake.Node, u
 	return &LoginService{
 		log:             log.NewHelper(logger),
 		uidGen:          uidGen,
-		phoneService:    NewPhoneService(cfg, logger, uidGen, userCase),
-		facebookService: NewFacebookService(cfg, logger, uidGen, userAuthCase, userCase),
-		appleService:    NewAppleService(cfg, logger, uidGen, userAuthCase),
-		googleService:   NewGoogleService(cfg, logger, uidGen, userAuthCase, userCase),
-		snapchatService: NewSnapchatService(cfg, logger, uidGen, userAuthCase, userCase),
+		phoneService:    NewPhoneService(cfg, logger, userCase),
+		facebookService: NewFacebookService(cfg, logger, userAuthCase, userCase),
+		appleService:    NewAppleService(cfg, logger, userAuthCase),
+		googleService:   NewGoogleService(cfg, logger, userAuthCase, userCase),
+		snapchatService: NewSnapchatService(cfg, logger, userAuthCase, userCase),
 		jwtGenerator:    jwtGenerator,
 	}
 }

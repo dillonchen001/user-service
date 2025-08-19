@@ -320,7 +320,7 @@ func (x *LoginResponse) GetUserInfo() *UserInfo {
 
 type UserInfo struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Avatar        string                 `protobuf:"bytes,3,opt,name=avatar,proto3" json:"avatar,omitempty"`
 	Phone         string                 `protobuf:"bytes,4,opt,name=phone,proto3" json:"phone,omitempty"`
@@ -359,11 +359,11 @@ func (*UserInfo) Descriptor() ([]byte, []int) {
 	return file_auth_v1_auth_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *UserInfo) GetId() string {
+func (x *UserInfo) GetUserId() int64 {
 	if x != nil {
-		return x.Id
+		return x.UserId
 	}
-	return ""
+	return 0
 }
 
 func (x *UserInfo) GetName() string {
@@ -414,9 +414,9 @@ const file_auth_v1_auth_proto_rawDesc = "" +
 	"\rLoginResponse\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12\x1e\n" +
 	"\vis_new_user\x18\x02 \x01(\bR\tisNewUser\x12.\n" +
-	"\tuser_info\x18\x03 \x01(\v2\x11.auth.v1.UserInfoR\buserInfo\"r\n" +
-	"\bUserInfo\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\tuser_info\x18\x03 \x01(\v2\x11.auth.v1.UserInfoR\buserInfo\"{\n" +
+	"\bUserInfo\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
 	"\x06avatar\x18\x03 \x01(\tR\x06avatar\x12\x14\n" +
 	"\x05phone\x18\x04 \x01(\tR\x05phone\x12\x14\n" +

@@ -31,7 +31,6 @@ func (_u *AuthProviderUpdate) Where(ps ...predicate.AuthProvider) *AuthProviderU
 
 // SetUserID sets the "user_id" field.
 func (_u *AuthProviderUpdate) SetUserID(v int64) *AuthProviderUpdate {
-	_u.mutation.ResetUserID()
 	_u.mutation.SetUserID(v)
 	return _u
 }
@@ -41,12 +40,6 @@ func (_u *AuthProviderUpdate) SetNillableUserID(v *int64) *AuthProviderUpdate {
 	if v != nil {
 		_u.SetUserID(*v)
 	}
-	return _u
-}
-
-// AddUserID adds value to the "user_id" field.
-func (_u *AuthProviderUpdate) AddUserID(v int64) *AuthProviderUpdate {
-	_u.mutation.AddUserID(v)
 	return _u
 }
 
@@ -88,20 +81,6 @@ func (_u *AuthProviderUpdate) SetCreatedAt(v time.Time) *AuthProviderUpdate {
 func (_u *AuthProviderUpdate) SetNillableCreatedAt(v *time.Time) *AuthProviderUpdate {
 	if v != nil {
 		_u.SetCreatedAt(*v)
-	}
-	return _u
-}
-
-// SetUserID sets the "user" edge to the User entity by ID.
-func (_u *AuthProviderUpdate) SetUserID(id int64) *AuthProviderUpdate {
-	_u.mutation.SetUserID(id)
-	return _u
-}
-
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (_u *AuthProviderUpdate) SetNillableUserID(id *int64) *AuthProviderUpdate {
-	if id != nil {
-		_u = _u.SetUserID(*id)
 	}
 	return _u
 }
@@ -161,6 +140,9 @@ func (_u *AuthProviderUpdate) check() error {
 			return &ValidationError{Name: "provider_id", err: fmt.Errorf(`ent: validator failed for field "AuthProvider.provider_id": %w`, err)}
 		}
 	}
+	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "AuthProvider.user"`)
+	}
 	return nil
 }
 
@@ -175,12 +157,6 @@ func (_u *AuthProviderUpdate) sqlSave(ctx context.Context) (_node int, err error
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := _u.mutation.UserID(); ok {
-		_spec.SetField(authprovider.FieldUserID, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedUserID(); ok {
-		_spec.AddField(authprovider.FieldUserID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.ProviderType(); ok {
 		_spec.SetField(authprovider.FieldProviderType, field.TypeString, value)
@@ -242,7 +218,6 @@ type AuthProviderUpdateOne struct {
 
 // SetUserID sets the "user_id" field.
 func (_u *AuthProviderUpdateOne) SetUserID(v int64) *AuthProviderUpdateOne {
-	_u.mutation.ResetUserID()
 	_u.mutation.SetUserID(v)
 	return _u
 }
@@ -252,12 +227,6 @@ func (_u *AuthProviderUpdateOne) SetNillableUserID(v *int64) *AuthProviderUpdate
 	if v != nil {
 		_u.SetUserID(*v)
 	}
-	return _u
-}
-
-// AddUserID adds value to the "user_id" field.
-func (_u *AuthProviderUpdateOne) AddUserID(v int64) *AuthProviderUpdateOne {
-	_u.mutation.AddUserID(v)
 	return _u
 }
 
@@ -299,20 +268,6 @@ func (_u *AuthProviderUpdateOne) SetCreatedAt(v time.Time) *AuthProviderUpdateOn
 func (_u *AuthProviderUpdateOne) SetNillableCreatedAt(v *time.Time) *AuthProviderUpdateOne {
 	if v != nil {
 		_u.SetCreatedAt(*v)
-	}
-	return _u
-}
-
-// SetUserID sets the "user" edge to the User entity by ID.
-func (_u *AuthProviderUpdateOne) SetUserID(id int64) *AuthProviderUpdateOne {
-	_u.mutation.SetUserID(id)
-	return _u
-}
-
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (_u *AuthProviderUpdateOne) SetNillableUserID(id *int64) *AuthProviderUpdateOne {
-	if id != nil {
-		_u = _u.SetUserID(*id)
 	}
 	return _u
 }
@@ -385,6 +340,9 @@ func (_u *AuthProviderUpdateOne) check() error {
 			return &ValidationError{Name: "provider_id", err: fmt.Errorf(`ent: validator failed for field "AuthProvider.provider_id": %w`, err)}
 		}
 	}
+	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "AuthProvider.user"`)
+	}
 	return nil
 }
 
@@ -416,12 +374,6 @@ func (_u *AuthProviderUpdateOne) sqlSave(ctx context.Context) (_node *AuthProvid
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := _u.mutation.UserID(); ok {
-		_spec.SetField(authprovider.FieldUserID, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedUserID(); ok {
-		_spec.AddField(authprovider.FieldUserID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.ProviderType(); ok {
 		_spec.SetField(authprovider.FieldProviderType, field.TypeString, value)

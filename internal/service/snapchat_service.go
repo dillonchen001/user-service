@@ -9,30 +9,26 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-kratos/kratos/v2/log"
 	v1 "user-service/api/auth/v1"
 	"user-service/internal/biz"
 	"user-service/internal/conf"
 	"user-service/third_party/jwt"
-	"user-service/third_party/snowflake"
-
-	"github.com/go-kratos/kratos/v2/log"
 )
 
 type SnapchatService struct {
 	cfg          *conf.Jwt
 	log          *log.Helper
-	uidGen       *snowflake.Node
 	userAuthCase *biz.UserAuthCase
 	userCase     *biz.UserCase
 	jwtGen       *jwt.Generator
 	httpClient   *http.Client
 }
 
-func NewSnapchatService(cfg *conf.Jwt, logger log.Logger, uidGen *snowflake.Node, userAuthCase *biz.UserAuthCase, userCase *biz.UserCase) *SnapchatService {
+func NewSnapchatService(cfg *conf.Jwt, logger log.Logger, userAuthCase *biz.UserAuthCase, userCase *biz.UserCase) *SnapchatService {
 	return &SnapchatService{
 		cfg:          cfg,
 		log:          log.NewHelper(logger),
-		uidGen:       uidGen,
 		userAuthCase: userAuthCase,
 		userCase:     userCase,
 		jwtGen:       jwt.NewGenerator(cfg.Secret, int(cfg.Expires)),
@@ -82,7 +78,7 @@ func (s *SnapchatService) Login(ctx context.Context, req *v1.LoginWithSnapchatRe
 	}
 
 	// 查找或创建用户
-	u, isNew, err := s.userAuthCase.FindOrCreateBySnapchatID(ctx, s.uidGen,
+	u, isNew, err := s.userAuthCase.FindOrCreateBySnapchatID(ctx,
 		tokenInfo.Data.UserID,
 		userInfo.Data.DisplayName,
 	)
@@ -100,7 +96,7 @@ func (s *SnapchatService) Login(ctx context.Context, req *v1.LoginWithSnapchatRe
 	}
 
 	// 生成 JWT token
-	token, err := s.jwtGen.GenerateToken(u.ID)
+	token, err := s.jwtGen.GenerateToken(u.UserID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate token: %w", err)
 	}
@@ -110,7 +106,7 @@ func (s *SnapchatService) Login(ctx context.Context, req *v1.LoginWithSnapchatRe
 		Token:     token,
 		IsNewUser: isNew,
 		UserInfo: &v1.UserInfo{
-			Id:     u.ID,
+			UserId: u.UserID,
 			Name:   u.Name,
 			Avatar: u.Avatar,
 		},

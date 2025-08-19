@@ -8,7 +8,6 @@ import (
 	"io"
 	"net/http"
 	"time"
-	"user-service/third_party/snowflake"
 
 	v1 "user-service/api/auth/v1"
 	"user-service/internal/biz"
@@ -22,18 +21,16 @@ import (
 type GoogleService struct {
 	cfg          *conf.Jwt
 	log          *log.Helper
-	uidGen       *snowflake.Node
 	userAuthCase *biz.UserAuthCase
 	userCase     *biz.UserCase
 	jwtGen       *jwt.Generator
 	httpClient   *http.Client
 }
 
-func NewGoogleService(cfg *conf.Jwt, logger log.Logger, uidGen *snowflake.Node, userAuthCase *biz.UserAuthCase, userCase *biz.UserCase) *GoogleService {
+func NewGoogleService(cfg *conf.Jwt, logger log.Logger, userAuthCase *biz.UserAuthCase, userCase *biz.UserCase) *GoogleService {
 	return &GoogleService{
 		cfg:          cfg,
 		log:          log.NewHelper(logger),
-		uidGen:       uidGen,
 		userAuthCase: userAuthCase,
 		userCase:     userCase,
 		jwtGen:       jwt.NewGenerator(cfg.Secret, int(cfg.Expires)),
@@ -69,7 +66,7 @@ func (s *GoogleService) Login(ctx context.Context, req *v1.LoginWithGoogleReques
 	}
 
 	// 查找或创建用户
-	u, isNew, err := s.userAuthCase.FindOrCreateByGoogleID(ctx, s.uidGen, claims.Sub, claims.Name, claims.Email)
+	u, isNew, err := s.userAuthCase.FindOrCreateByGoogleID(ctx, claims.Sub, claims.Name, claims.Email)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find or create user: %w", err)
 	}
@@ -83,7 +80,7 @@ func (s *GoogleService) Login(ctx context.Context, req *v1.LoginWithGoogleReques
 	}
 
 	// 生成 JWT token
-	token, err := s.jwtGen.GenerateToken(u.ID)
+	token, err := s.jwtGen.GenerateToken(u.UserID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate token: %w", err)
 	}
@@ -93,7 +90,7 @@ func (s *GoogleService) Login(ctx context.Context, req *v1.LoginWithGoogleReques
 		Token:     token,
 		IsNewUser: isNew,
 		UserInfo: &v1.UserInfo{
-			Id:     u.ID,
+			UserId: u.UserID,
 			Name:   u.Name,
 			Avatar: u.Avatar,
 			Email:  u.Email,

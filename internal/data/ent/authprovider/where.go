@@ -95,26 +95,6 @@ func UserIDNotIn(vs ...int64) predicate.AuthProvider {
 	return predicate.AuthProvider(sql.FieldNotIn(FieldUserID, vs...))
 }
 
-// UserIDGT applies the GT predicate on the "user_id" field.
-func UserIDGT(v int64) predicate.AuthProvider {
-	return predicate.AuthProvider(sql.FieldGT(FieldUserID, v))
-}
-
-// UserIDGTE applies the GTE predicate on the "user_id" field.
-func UserIDGTE(v int64) predicate.AuthProvider {
-	return predicate.AuthProvider(sql.FieldGTE(FieldUserID, v))
-}
-
-// UserIDLT applies the LT predicate on the "user_id" field.
-func UserIDLT(v int64) predicate.AuthProvider {
-	return predicate.AuthProvider(sql.FieldLT(FieldUserID, v))
-}
-
-// UserIDLTE applies the LTE predicate on the "user_id" field.
-func UserIDLTE(v int64) predicate.AuthProvider {
-	return predicate.AuthProvider(sql.FieldLTE(FieldUserID, v))
-}
-
 // ProviderTypeEQ applies the EQ predicate on the "provider_type" field.
 func ProviderTypeEQ(v string) predicate.AuthProvider {
 	return predicate.AuthProvider(sql.FieldEQ(FieldProviderType, v))

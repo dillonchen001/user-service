@@ -4,14 +4,12 @@ import (
 	"context"
 	"errors"
 
+	"github.com/go-kratos/kratos/v2/log"
 	v1 "user-service/api/auth/v1"
 	"user-service/internal/biz"
 	"user-service/internal/conf"
 	"user-service/third_party/jwt"
 	"user-service/third_party/sms"
-	"user-service/third_party/snowflake"
-
-	"github.com/go-kratos/kratos/v2/log"
 )
 
 // 修改PhoneService结构体
@@ -19,7 +17,6 @@ import (
 type PhoneService struct {
 	log        *log.Helper
 	cfg        *conf.Jwt
-	uidGen     *snowflake.Node
 	userCase   *biz.UserCase
 	jwtGen     *jwt.Generator
 	smsService sms.Service // 添加SMS服务
@@ -27,7 +24,7 @@ type PhoneService struct {
 
 // 修改NewPhoneService函数
 
-func NewPhoneService(cfg *conf.Jwt, logger log.Logger, uidGen *snowflake.Node, userCase *biz.UserCase) *PhoneService {
+func NewPhoneService(cfg *conf.Jwt, logger log.Logger, userCase *biz.UserCase) *PhoneService {
 	// 创建SMS服务
 	smsConfig := sms.DefaultConfig()
 	smsService := sms.NewService(smsConfig)
@@ -35,7 +32,6 @@ func NewPhoneService(cfg *conf.Jwt, logger log.Logger, uidGen *snowflake.Node, u
 	return &PhoneService{
 		cfg:        cfg,
 		log:        log.NewHelper(logger),
-		uidGen:     uidGen,
 		userCase:   userCase,
 		jwtGen:     jwt.NewGenerator(cfg.Secret, int(cfg.Expires)),
 		smsService: smsService,
@@ -54,13 +50,13 @@ func (s *PhoneService) Login(ctx context.Context, req *v1.LoginWithPhoneRequest)
 	}
 
 	// 查找或创建用户
-	u, isNew, err := s.userCase.FindOrCreateByPhone(ctx, s.uidGen, req.PhoneNumber)
+	u, isNew, err := s.userCase.FindOrCreateByPhone(ctx, req.PhoneNumber)
 	if err != nil {
 		return nil, err
 	}
 
 	// 生成JWT token
-	token, err := s.jwtGen.GenerateToken(u.ID)
+	token, err := s.jwtGen.GenerateToken(u.UserID)
 	if err != nil {
 		return nil, err
 	}
@@ -70,9 +66,9 @@ func (s *PhoneService) Login(ctx context.Context, req *v1.LoginWithPhoneRequest)
 		Token:     token,
 		IsNewUser: isNew,
 		UserInfo: &v1.UserInfo{
-			Id:    u.ID,
-			Name:  u.Name,
-			Phone: u.Phone,
+			UserId: u.UserID,
+			Name:   u.Name,
+			Phone:  u.Phone,
 		},
 	}, nil
 }

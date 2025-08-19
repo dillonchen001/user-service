@@ -28,9 +28,8 @@ type AuthProvider struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AuthProviderQuery when eager-loading is set.
-	Edges               AuthProviderEdges `json:"edges"`
-	user_auth_providers *int64
-	selectValues        sql.SelectValues
+	Edges        AuthProviderEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // AuthProviderEdges holds the relations/edges for other nodes in the graph.
@@ -64,8 +63,6 @@ func (*AuthProvider) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case authprovider.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
-		case authprovider.ForeignKeys[0]: // user_auth_providers
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -110,13 +107,6 @@ func (_m *AuthProvider) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
 				_m.CreatedAt = value.Time
-			}
-		case authprovider.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field user_auth_providers", value)
-			} else if value.Valid {
-				_m.user_auth_providers = new(int64)
-				*_m.user_auth_providers = int64(value.Int64)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])

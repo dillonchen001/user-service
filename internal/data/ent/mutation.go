@@ -35,8 +35,6 @@ type AuthProviderMutation struct {
 	op            Op
 	typ           string
 	id            *int64
-	user_id       *int64
-	adduser_id    *int64
 	provider_type *string
 	provider_id   *string
 	created_at    *time.Time
@@ -154,13 +152,12 @@ func (m *AuthProviderMutation) IDs(ctx context.Context) ([]int64, error) {
 
 // SetUserID sets the "user_id" field.
 func (m *AuthProviderMutation) SetUserID(i int64) {
-	m.user_id = &i
-	m.adduser_id = nil
+	m.user = &i
 }
 
 // UserID returns the value of the "user_id" field in the mutation.
 func (m *AuthProviderMutation) UserID() (r int64, exists bool) {
-	v := m.user_id
+	v := m.user
 	if v == nil {
 		return
 	}
@@ -184,28 +181,9 @@ func (m *AuthProviderMutation) OldUserID(ctx context.Context) (v int64, err erro
 	return oldValue.UserID, nil
 }
 
-// AddUserID adds i to the "user_id" field.
-func (m *AuthProviderMutation) AddUserID(i int64) {
-	if m.adduser_id != nil {
-		*m.adduser_id += i
-	} else {
-		m.adduser_id = &i
-	}
-}
-
-// AddedUserID returns the value that was added to the "user_id" field in this mutation.
-func (m *AuthProviderMutation) AddedUserID() (r int64, exists bool) {
-	v := m.adduser_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetUserID resets all changes to the "user_id" field.
 func (m *AuthProviderMutation) ResetUserID() {
-	m.user_id = nil
-	m.adduser_id = nil
+	m.user = nil
 }
 
 // SetProviderType sets the "provider_type" field.
@@ -316,27 +294,15 @@ func (m *AuthProviderMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
-// SetUserID sets the "user" edge to the User entity by id.
-func (m *AuthProviderMutation) SetUserID(id int64) {
-	m.user = &id
-}
-
 // ClearUser clears the "user" edge to the User entity.
 func (m *AuthProviderMutation) ClearUser() {
 	m.cleareduser = true
+	m.clearedFields[authprovider.FieldUserID] = struct{}{}
 }
 
 // UserCleared reports if the "user" edge to the User entity was cleared.
 func (m *AuthProviderMutation) UserCleared() bool {
 	return m.cleareduser
-}
-
-// UserID returns the "user" edge ID in the mutation.
-func (m *AuthProviderMutation) UserID() (id int64, exists bool) {
-	if m.user != nil {
-		return *m.user, true
-	}
-	return
 }
 
 // UserIDs returns the "user" edge IDs in the mutation.
@@ -390,7 +356,7 @@ func (m *AuthProviderMutation) Type() string {
 // AddedFields().
 func (m *AuthProviderMutation) Fields() []string {
 	fields := make([]string, 0, 4)
-	if m.user_id != nil {
+	if m.user != nil {
 		fields = append(fields, authprovider.FieldUserID)
 	}
 	if m.provider_type != nil {
@@ -480,9 +446,6 @@ func (m *AuthProviderMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *AuthProviderMutation) AddedFields() []string {
 	var fields []string
-	if m.adduser_id != nil {
-		fields = append(fields, authprovider.FieldUserID)
-	}
 	return fields
 }
 
@@ -491,8 +454,6 @@ func (m *AuthProviderMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *AuthProviderMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case authprovider.FieldUserID:
-		return m.AddedUserID()
 	}
 	return nil, false
 }
@@ -502,13 +463,6 @@ func (m *AuthProviderMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *AuthProviderMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case authprovider.FieldUserID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddUserID(v)
-		return nil
 	}
 	return fmt.Errorf("unknown AuthProvider numeric field %s", name)
 }

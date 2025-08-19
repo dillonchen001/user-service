@@ -163,7 +163,7 @@ components:
         auth.v1.UserInfo:
             type: object
             properties:
-                id:
+                userId:
                     type: string
                 name:
                     type: string

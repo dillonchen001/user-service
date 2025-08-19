@@ -59,20 +59,6 @@ func (_c *AuthProviderCreate) SetID(v int64) *AuthProviderCreate {
 	return _c
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (_c *AuthProviderCreate) SetUserID(id int64) *AuthProviderCreate {
-	_c.mutation.SetUserID(id)
-	return _c
-}
-
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (_c *AuthProviderCreate) SetNillableUserID(id *int64) *AuthProviderCreate {
-	if id != nil {
-		_c = _c.SetUserID(*id)
-	}
-	return _c
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (_c *AuthProviderCreate) SetUser(v *User) *AuthProviderCreate {
 	return _c.SetUserID(v.ID)
@@ -143,6 +129,9 @@ func (_c *AuthProviderCreate) check() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AuthProvider.created_at"`)}
 	}
+	if len(_c.mutation.UserIDs()) == 0 {
+		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "AuthProvider.user"`)}
+	}
 	return nil
 }
 
@@ -175,10 +164,6 @@ func (_c *AuthProviderCreate) createSpec() (*AuthProvider, *sqlgraph.CreateSpec)
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := _c.mutation.UserID(); ok {
-		_spec.SetField(authprovider.FieldUserID, field.TypeInt64, value)
-		_node.UserID = value
-	}
 	if value, ok := _c.mutation.ProviderType(); ok {
 		_spec.SetField(authprovider.FieldProviderType, field.TypeString, value)
 		_node.ProviderType = value
@@ -205,7 +190,7 @@ func (_c *AuthProviderCreate) createSpec() (*AuthProvider, *sqlgraph.CreateSpec)
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_auth_providers = &nodes[0]
+		_node.UserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

@@ -18,7 +18,7 @@ func NewGenerator(secret string, expires int) *Generator {
 	}
 }
 
-func (g *Generator) GenerateToken(userID string) (string, error) {
+func (g *Generator) GenerateToken(userID int64) (string, error) {
 	// 创建claims
 	claims := jwt.MapClaims{
 		"user_id": userID,
