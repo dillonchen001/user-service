@@ -12,7 +12,7 @@ var (
 	AuthProvidersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
 		{Name: "provider_type", Type: field.TypeString, Size: 20},
-		{Name: "provider_id", Type: field.TypeString, Size: 100},
+		{Name: "provider_id", Type: field.TypeString, Size: 255},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "user_id", Type: field.TypeInt64, Unique: true},
 	}
