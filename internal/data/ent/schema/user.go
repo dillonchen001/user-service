@@ -42,7 +42,6 @@ func (User) Fields() []ent.Field {
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("auth_providers", AuthProvider.Type).
-			Field("user_id").
 			Unique(),
 	}
 }
