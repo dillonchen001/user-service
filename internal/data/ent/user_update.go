@@ -126,19 +126,23 @@ func (_u *UserUpdate) SetUpdatedAt(v time.Time) *UserUpdate {
 	return _u
 }
 
-// AddAuthProviderIDs adds the "auth_providers" edge to the AuthProvider entity by IDs.
-func (_u *UserUpdate) AddAuthProviderIDs(ids ...int64) *UserUpdate {
-	_u.mutation.AddAuthProviderIDs(ids...)
+// SetAuthProvidersID sets the "auth_providers" edge to the AuthProvider entity by ID.
+func (_u *UserUpdate) SetAuthProvidersID(id int64) *UserUpdate {
+	_u.mutation.SetAuthProvidersID(id)
 	return _u
 }
 
-// AddAuthProviders adds the "auth_providers" edges to the AuthProvider entity.
-func (_u *UserUpdate) AddAuthProviders(v ...*AuthProvider) *UserUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
+// SetNillableAuthProvidersID sets the "auth_providers" edge to the AuthProvider entity by ID if the given value is not nil.
+func (_u *UserUpdate) SetNillableAuthProvidersID(id *int64) *UserUpdate {
+	if id != nil {
+		_u = _u.SetAuthProvidersID(*id)
 	}
-	return _u.AddAuthProviderIDs(ids...)
+	return _u
+}
+
+// SetAuthProviders sets the "auth_providers" edge to the AuthProvider entity.
+func (_u *UserUpdate) SetAuthProviders(v *AuthProvider) *UserUpdate {
+	return _u.SetAuthProvidersID(v.ID)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -146,25 +150,10 @@ func (_u *UserUpdate) Mutation() *UserMutation {
 	return _u.mutation
 }
 
-// ClearAuthProviders clears all "auth_providers" edges to the AuthProvider entity.
+// ClearAuthProviders clears the "auth_providers" edge to the AuthProvider entity.
 func (_u *UserUpdate) ClearAuthProviders() *UserUpdate {
 	_u.mutation.ClearAuthProviders()
 	return _u
-}
-
-// RemoveAuthProviderIDs removes the "auth_providers" edge to AuthProvider entities by IDs.
-func (_u *UserUpdate) RemoveAuthProviderIDs(ids ...int64) *UserUpdate {
-	_u.mutation.RemoveAuthProviderIDs(ids...)
-	return _u
-}
-
-// RemoveAuthProviders removes "auth_providers" edges to AuthProvider entities.
-func (_u *UserUpdate) RemoveAuthProviders(v ...*AuthProvider) *UserUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveAuthProviderIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -266,7 +255,7 @@ func (_u *UserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.AuthProvidersCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   user.AuthProvidersTable,
 			Columns: []string{user.AuthProvidersColumn},
@@ -274,28 +263,12 @@ func (_u *UserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(authprovider.FieldID, field.TypeInt64),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedAuthProvidersIDs(); len(nodes) > 0 && !_u.mutation.AuthProvidersCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.AuthProvidersTable,
-			Columns: []string{user.AuthProvidersColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(authprovider.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := _u.mutation.AuthProvidersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   user.AuthProvidersTable,
 			Columns: []string{user.AuthProvidersColumn},
@@ -426,19 +399,23 @@ func (_u *UserUpdateOne) SetUpdatedAt(v time.Time) *UserUpdateOne {
 	return _u
 }
 
-// AddAuthProviderIDs adds the "auth_providers" edge to the AuthProvider entity by IDs.
-func (_u *UserUpdateOne) AddAuthProviderIDs(ids ...int64) *UserUpdateOne {
-	_u.mutation.AddAuthProviderIDs(ids...)
+// SetAuthProvidersID sets the "auth_providers" edge to the AuthProvider entity by ID.
+func (_u *UserUpdateOne) SetAuthProvidersID(id int64) *UserUpdateOne {
+	_u.mutation.SetAuthProvidersID(id)
 	return _u
 }
 
-// AddAuthProviders adds the "auth_providers" edges to the AuthProvider entity.
-func (_u *UserUpdateOne) AddAuthProviders(v ...*AuthProvider) *UserUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
+// SetNillableAuthProvidersID sets the "auth_providers" edge to the AuthProvider entity by ID if the given value is not nil.
+func (_u *UserUpdateOne) SetNillableAuthProvidersID(id *int64) *UserUpdateOne {
+	if id != nil {
+		_u = _u.SetAuthProvidersID(*id)
 	}
-	return _u.AddAuthProviderIDs(ids...)
+	return _u
+}
+
+// SetAuthProviders sets the "auth_providers" edge to the AuthProvider entity.
+func (_u *UserUpdateOne) SetAuthProviders(v *AuthProvider) *UserUpdateOne {
+	return _u.SetAuthProvidersID(v.ID)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -446,25 +423,10 @@ func (_u *UserUpdateOne) Mutation() *UserMutation {
 	return _u.mutation
 }
 
-// ClearAuthProviders clears all "auth_providers" edges to the AuthProvider entity.
+// ClearAuthProviders clears the "auth_providers" edge to the AuthProvider entity.
 func (_u *UserUpdateOne) ClearAuthProviders() *UserUpdateOne {
 	_u.mutation.ClearAuthProviders()
 	return _u
-}
-
-// RemoveAuthProviderIDs removes the "auth_providers" edge to AuthProvider entities by IDs.
-func (_u *UserUpdateOne) RemoveAuthProviderIDs(ids ...int64) *UserUpdateOne {
-	_u.mutation.RemoveAuthProviderIDs(ids...)
-	return _u
-}
-
-// RemoveAuthProviders removes "auth_providers" edges to AuthProvider entities.
-func (_u *UserUpdateOne) RemoveAuthProviders(v ...*AuthProvider) *UserUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveAuthProviderIDs(ids...)
 }
 
 // Where appends a list predicates to the UserUpdate builder.
@@ -596,7 +558,7 @@ func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
 	}
 	if _u.mutation.AuthProvidersCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   user.AuthProvidersTable,
 			Columns: []string{user.AuthProvidersColumn},
@@ -604,28 +566,12 @@ func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(authprovider.FieldID, field.TypeInt64),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedAuthProvidersIDs(); len(nodes) > 0 && !_u.mutation.AuthProvidersCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.AuthProvidersTable,
-			Columns: []string{user.AuthProvidersColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(authprovider.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := _u.mutation.AuthProvidersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   user.AuthProvidersTable,
 			Columns: []string{user.AuthProvidersColumn},

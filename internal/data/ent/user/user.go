@@ -123,23 +123,16 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
-// ByAuthProvidersCount orders the results by auth_providers count.
-func ByAuthProvidersCount(opts ...sql.OrderTermOption) OrderOption {
+// ByAuthProvidersField orders the results by auth_providers field.
+func ByAuthProvidersField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newAuthProvidersStep(), opts...)
-	}
-}
-
-// ByAuthProviders orders the results by auth_providers terms.
-func ByAuthProviders(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newAuthProvidersStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newAuthProvidersStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newAuthProvidersStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(AuthProvidersInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, AuthProvidersTable, AuthProvidersColumn),
+		sqlgraph.Edge(sqlgraph.O2O, false, AuthProvidersTable, AuthProvidersColumn),
 	)
 }

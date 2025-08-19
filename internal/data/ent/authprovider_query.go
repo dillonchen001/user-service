@@ -74,7 +74,7 @@ func (_q *AuthProviderQuery) QueryUser() *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(authprovider.Table, authprovider.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, authprovider.UserTable, authprovider.UserColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, authprovider.UserTable, authprovider.UserColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
