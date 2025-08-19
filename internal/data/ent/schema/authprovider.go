@@ -34,8 +34,8 @@ func (AuthProvider) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("user", User.Type).
 			Ref("auth_providers").
+			Unique().
 			Field("user_id").
-			Required().
-			Unique(),
+			Required(),
 	}
 }
