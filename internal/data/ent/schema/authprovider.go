@@ -34,8 +34,8 @@ func (AuthProvider) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("user", User.Type).
 			Ref("auth_providers").
-			Field("user_id").
-			Required(). // 设置为必需
+			Field("user_id"). // 指定关联字段为user_id
+			Required().
 			Unique(),
 	}
 }

@@ -17,7 +17,7 @@ CREATE TABLE users (
 -- 认证表 (存储不同登录方式的关联)
 CREATE TABLE auth_providers (
   id bigint AUTO_INCREMENT PRIMARY KEY comment '自增id',
-  user_id bigint not null default 0 comment '用户id',
+  user_id bigint not null default 0 UNIQUE comment '用户id',
   provider_type ENUM('facebook', 'apple', 'google', 'snapchat') NOT NULL  comment '类型',
   provider_id VARCHAR(255) NOT NULL default '' comment '登陆id',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP comment '创建时间',
