@@ -1,0 +1,186 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: ""
+    version: 0.0.1
+paths:
+    /helloworld/{name}:
+        get:
+            tags:
+                - Greeter
+            description: Sends a greeting
+            operationId: Greeter_SayHello
+            parameters:
+                - name: name
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.v1.HelloReply'
+    /user/v1/login_with_apple:
+        post:
+            tags:
+                - AuthService
+            description: Apple登录
+            operationId: AuthService_LoginWithApple
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/auth.v1.LoginWithAppleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/auth.v1.LoginResponse'
+    /user/v1/login_with_facebook:
+        post:
+            tags:
+                - AuthService
+            description: Facebook登录
+            operationId: AuthService_LoginWithFacebook
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/auth.v1.LoginWithFacebookRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/auth.v1.LoginResponse'
+    /user/v1/login_with_google:
+        post:
+            tags:
+                - AuthService
+            description: Google登录
+            operationId: AuthService_LoginWithGoogle
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/auth.v1.LoginWithGoogleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/auth.v1.LoginResponse'
+    /user/v1/login_with_phone:
+        post:
+            tags:
+                - AuthService
+            description: 手机号登录
+            operationId: AuthService_LoginWithPhone
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/auth.v1.LoginWithPhoneRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/auth.v1.LoginResponse'
+    /user/v1/login_with_snapchat:
+        post:
+            tags:
+                - AuthService
+            description: Snapchat登录
+            operationId: AuthService_LoginWithSnapchat
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/auth.v1.LoginWithSnapchatRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/auth.v1.LoginResponse'
+components:
+    schemas:
+        auth.v1.LoginResponse:
+            type: object
+            properties:
+                token:
+                    type: string
+                isNewUser:
+                    type: boolean
+                userInfo:
+                    $ref: '#/components/schemas/auth.v1.UserInfo'
+        auth.v1.LoginWithAppleRequest:
+            type: object
+            properties:
+                idToken:
+                    type: string
+                nonce:
+                    type: string
+        auth.v1.LoginWithFacebookRequest:
+            type: object
+            properties:
+                accessToken:
+                    type: string
+        auth.v1.LoginWithGoogleRequest:
+            type: object
+            properties:
+                idToken:
+                    type: string
+        auth.v1.LoginWithPhoneRequest:
+            type: object
+            properties:
+                phoneNumber:
+                    type: string
+                verificationCode:
+                    type: string
+        auth.v1.LoginWithSnapchatRequest:
+            type: object
+            properties:
+                accessToken:
+                    type: string
+        auth.v1.UserInfo:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                avatar:
+                    type: string
+                phone:
+                    type: string
+                email:
+                    type: string
+        helloworld.v1.HelloReply:
+            type: object
+            properties:
+                message:
+                    type: string
+            description: The response message containing the greetings
+tags:
+    - name: AuthService
+      description: 登录请求通用结构
+    - name: Greeter
+      description: The greeting service definition.

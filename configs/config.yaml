@@ -1,0 +1,46 @@
+server:
+  http:
+    addr: 0.0.0.0:8000
+    timeout: 1s
+  grpc:
+    addr: 0.0.0.0:9000
+    timeout: 1s
+
+logger:
+  level: info
+  encoding: json
+  file_path: logs/app.log
+
+jwt:
+  secret: your-secret-key
+  expires: 720
+
+auth:
+  facebook:
+    app_id: your-facebook-app-id
+    app_secret: your-facebook-app-secret
+  google:
+    client_id: your-google-client-id
+  apple:
+    team_id: your-apple-team-id
+    key_id: your-apple-key-id
+    private_key_path: configs/apple.p8
+  snapchat:
+    client_id: your-snapchat-client-id
+    client_secret: your-snapchat-client-secret
+  sms:
+    provider: your-sms-provider
+    api_key: your-sms-api-key
+
+data:
+  database:
+    driver: mysql
+    source: root:root@tcp(127.0.0.1:3306)/test?parseTime=True&loc=Local
+  redis:
+    network: 
+    addr: 127.0.0.1:6379
+    password: 1234
+    db: 0
+    dial_timeout = 0.1s
+    read_timeout: 0.2s
+    write_timeout: 0.2s
