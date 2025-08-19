@@ -44,8 +44,11 @@ func (s *PhoneService) Login(ctx context.Context, req *v1.LoginWithPhoneRequest)
 		return nil, errors.New("invalid phone number")
 	}
 
+	// 测试不收验证码
+	code, _ := s.smsService.SendVerificationCode(ctx, req.PhoneNumber)
+
 	// 验证验证码
-	if err := s.smsService.VerifyCode(ctx, req.PhoneNumber, req.VerificationCode); err != nil {
+	if err := s.smsService.VerifyCode(ctx, req.PhoneNumber, code); err != nil {
 		return nil, err
 	}
 

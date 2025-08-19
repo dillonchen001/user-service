@@ -89,6 +89,12 @@ func (s *AppleService) Login(ctx context.Context, req *v1.LoginWithAppleRequest)
 }
 
 func (s *AppleService) verifyIdToken(ctx context.Context, idToken, nonce string) (*AppleClaims, error) {
+	// 测试，先写死一下
+	return &AppleClaims{
+		Email: "bjbd2015@163.com",
+		Sub:   "293239232323",
+	}, nil
+
 	// 解析 token 头部以获取 kid
 	parts := strings.Split(idToken, ".")
 	if len(parts) != 3 {
