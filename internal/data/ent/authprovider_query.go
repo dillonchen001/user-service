@@ -23,7 +23,7 @@ type AuthProviderQuery struct {
 	order      []authprovider.OrderOption
 	inters     []Interceptor
 	predicates []predicate.AuthProvider
-	withUsers  *UserQuery
+	withUser   *UserQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -60,8 +60,8 @@ func (_q *AuthProviderQuery) Order(o ...authprovider.OrderOption) *AuthProviderQ
 	return _q
 }
 
-// QueryUsers chains the current query on the "users" edge.
-func (_q *AuthProviderQuery) QueryUsers() *UserQuery {
+// QueryUser chains the current query on the "user" edge.
+func (_q *AuthProviderQuery) QueryUser() *UserQuery {
 	query := (&UserClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
@@ -74,7 +74,7 @@ func (_q *AuthProviderQuery) QueryUsers() *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(authprovider.Table, authprovider.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, authprovider.UsersTable, authprovider.UsersColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, authprovider.UserTable, authprovider.UserColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -274,21 +274,21 @@ func (_q *AuthProviderQuery) Clone() *AuthProviderQuery {
 		order:      append([]authprovider.OrderOption{}, _q.order...),
 		inters:     append([]Interceptor{}, _q.inters...),
 		predicates: append([]predicate.AuthProvider{}, _q.predicates...),
-		withUsers:  _q.withUsers.Clone(),
+		withUser:   _q.withUser.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
 }
 
-// WithUsers tells the query-builder to eager-load the nodes that are connected to
-// the "users" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *AuthProviderQuery) WithUsers(opts ...func(*UserQuery)) *AuthProviderQuery {
+// WithUser tells the query-builder to eager-load the nodes that are connected to
+// the "user" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *AuthProviderQuery) WithUser(opts ...func(*UserQuery)) *AuthProviderQuery {
 	query := (&UserClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	_q.withUsers = query
+	_q.withUser = query
 	return _q
 }
 
@@ -371,7 +371,7 @@ func (_q *AuthProviderQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 		nodes       = []*AuthProvider{}
 		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			_q.withUsers != nil,
+			_q.withUser != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -392,16 +392,16 @@ func (_q *AuthProviderQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := _q.withUsers; query != nil {
-		if err := _q.loadUsers(ctx, query, nodes, nil,
-			func(n *AuthProvider, e *User) { n.Edges.Users = e }); err != nil {
+	if query := _q.withUser; query != nil {
+		if err := _q.loadUser(ctx, query, nodes, nil,
+			func(n *AuthProvider, e *User) { n.Edges.User = e }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (_q *AuthProviderQuery) loadUsers(ctx context.Context, query *UserQuery, nodes []*AuthProvider, init func(*AuthProvider), assign func(*AuthProvider, *User)) error {
+func (_q *AuthProviderQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*AuthProvider, init func(*AuthProvider), assign func(*AuthProvider, *User)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*AuthProvider)
 	for i := range nodes {
@@ -456,7 +456,7 @@ func (_q *AuthProviderQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if _q.withUsers != nil {
+		if _q.withUser != nil {
 			_spec.Node.AddColumnOnce(authprovider.FieldUserID)
 		}
 	}

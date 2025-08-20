@@ -59,15 +59,9 @@ func (_c *AuthProviderCreate) SetID(v int64) *AuthProviderCreate {
 	return _c
 }
 
-// SetUsersID sets the "users" edge to the User entity by ID.
-func (_c *AuthProviderCreate) SetUsersID(id int64) *AuthProviderCreate {
-	_c.mutation.SetUsersID(id)
-	return _c
-}
-
-// SetUsers sets the "users" edge to the User entity.
-func (_c *AuthProviderCreate) SetUsers(v *User) *AuthProviderCreate {
-	return _c.SetUsersID(v.ID)
+// SetUser sets the "user" edge to the User entity.
+func (_c *AuthProviderCreate) SetUser(v *User) *AuthProviderCreate {
+	return _c.SetUserID(v.ID)
 }
 
 // Mutation returns the AuthProviderMutation object of the builder.
@@ -140,8 +134,8 @@ func (_c *AuthProviderCreate) check() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AuthProvider.created_at"`)}
 	}
-	if len(_c.mutation.UsersIDs()) == 0 {
-		return &ValidationError{Name: "users", err: errors.New(`ent: missing required edge "AuthProvider.users"`)}
+	if len(_c.mutation.UserIDs()) == 0 {
+		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "AuthProvider.user"`)}
 	}
 	return nil
 }
@@ -187,12 +181,12 @@ func (_c *AuthProviderCreate) createSpec() (*AuthProvider, *sqlgraph.CreateSpec)
 		_spec.SetField(authprovider.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := _c.mutation.UsersIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
-			Table:   authprovider.UsersTable,
-			Columns: []string{authprovider.UsersColumn},
+			Table:   authprovider.UserTable,
+			Columns: []string{authprovider.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
