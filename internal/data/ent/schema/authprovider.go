@@ -22,7 +22,7 @@ func (AuthProvider) Fields() []ent.Field {
 			Unique().
 			Positive(),
 		field.String("provider_type"). // 改为枚举类型
-			MaxLen(20),
+						MaxLen(20),
 		field.String("provider_id").
 			MaxLen(255), // 增加长度以匹配SQL定义
 		field.Time("created_at").
@@ -35,7 +35,6 @@ func (AuthProvider) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("user", User.Type).
 			Ref("auth_providers").
-			Unique().
 			Field("user_id").
 			Required().
 			Unique(),

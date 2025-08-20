@@ -324,7 +324,7 @@ func (c *AuthProviderClient) QueryUser(_m *AuthProvider) *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(authprovider.Table, authprovider.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, authprovider.UserTable, authprovider.UserColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, authprovider.UserTable, authprovider.UserColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -473,7 +473,7 @@ func (c *UserClient) QueryAuthProviders(_m *User) *AuthProviderQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(authprovider.Table, authprovider.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, user.AuthProvidersTable, user.AuthProvidersColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.AuthProvidersTable, user.AuthProvidersColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil

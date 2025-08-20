@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"strings"
 	"time"
-	"user-service/internal/data/ent/authprovider"
 	"user-service/internal/data/ent/user"
 
 	"entgo.io/ent"
@@ -41,19 +40,17 @@ type User struct {
 // UserEdges holds the relations/edges for other nodes in the graph.
 type UserEdges struct {
 	// AuthProviders holds the value of the auth_providers edge.
-	AuthProviders *AuthProvider `json:"auth_providers,omitempty"`
+	AuthProviders []*AuthProvider `json:"auth_providers,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 }
 
 // AuthProvidersOrErr returns the AuthProviders value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e UserEdges) AuthProvidersOrErr() (*AuthProvider, error) {
-	if e.AuthProviders != nil {
+// was not loaded in eager-loading.
+func (e UserEdges) AuthProvidersOrErr() ([]*AuthProvider, error) {
+	if e.loadedTypes[0] {
 		return e.AuthProviders, nil
-	} else if e.loadedTypes[0] {
-		return nil, &NotFoundError{label: authprovider.Label}
 	}
 	return nil, &NotLoadedError{edge: "auth_providers"}
 }

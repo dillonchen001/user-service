@@ -174,7 +174,7 @@ func (_u *AuthProviderUpdate) sqlSave(ctx context.Context) (_node int, err error
 	}
 	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   authprovider.UserTable,
 			Columns: []string{authprovider.UserColumn},
@@ -187,7 +187,7 @@ func (_u *AuthProviderUpdate) sqlSave(ctx context.Context) (_node int, err error
 	}
 	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   authprovider.UserTable,
 			Columns: []string{authprovider.UserColumn},
@@ -396,7 +396,7 @@ func (_u *AuthProviderUpdateOne) sqlSave(ctx context.Context) (_node *AuthProvid
 	}
 	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   authprovider.UserTable,
 			Columns: []string{authprovider.UserColumn},
@@ -409,7 +409,7 @@ func (_u *AuthProviderUpdateOne) sqlSave(ctx context.Context) (_node *AuthProvid
 	}
 	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   authprovider.UserTable,
 			Columns: []string{authprovider.UserColumn},

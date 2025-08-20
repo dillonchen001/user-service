@@ -595,7 +595,8 @@ type UserMutation struct {
 	created_at            *time.Time
 	updated_at            *time.Time
 	clearedFields         map[string]struct{}
-	auth_providers        *int64
+	auth_providers        map[int64]struct{}
+	removedauth_providers map[int64]struct{}
 	clearedauth_providers bool
 	done                  bool
 	oldValue              func(context.Context) (*User, error)
@@ -978,9 +979,14 @@ func (m *UserMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// SetAuthProvidersID sets the "auth_providers" edge to the AuthProvider entity by id.
-func (m *UserMutation) SetAuthProvidersID(id int64) {
-	m.auth_providers = &id
+// AddAuthProviderIDs adds the "auth_providers" edge to the AuthProvider entity by ids.
+func (m *UserMutation) AddAuthProviderIDs(ids ...int64) {
+	if m.auth_providers == nil {
+		m.auth_providers = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.auth_providers[ids[i]] = struct{}{}
+	}
 }
 
 // ClearAuthProviders clears the "auth_providers" edge to the AuthProvider entity.
@@ -993,20 +999,29 @@ func (m *UserMutation) AuthProvidersCleared() bool {
 	return m.clearedauth_providers
 }
 
-// AuthProvidersID returns the "auth_providers" edge ID in the mutation.
-func (m *UserMutation) AuthProvidersID() (id int64, exists bool) {
-	if m.auth_providers != nil {
-		return *m.auth_providers, true
+// RemoveAuthProviderIDs removes the "auth_providers" edge to the AuthProvider entity by IDs.
+func (m *UserMutation) RemoveAuthProviderIDs(ids ...int64) {
+	if m.removedauth_providers == nil {
+		m.removedauth_providers = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.auth_providers, ids[i])
+		m.removedauth_providers[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedAuthProviders returns the removed IDs of the "auth_providers" edge to the AuthProvider entity.
+func (m *UserMutation) RemovedAuthProvidersIDs() (ids []int64) {
+	for id := range m.removedauth_providers {
+		ids = append(ids, id)
 	}
 	return
 }
 
 // AuthProvidersIDs returns the "auth_providers" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// AuthProvidersID instead. It exists only for internal usage by the builders.
 func (m *UserMutation) AuthProvidersIDs() (ids []int64) {
-	if id := m.auth_providers; id != nil {
-		ids = append(ids, *id)
+	for id := range m.auth_providers {
+		ids = append(ids, id)
 	}
 	return
 }
@@ -1015,6 +1030,7 @@ func (m *UserMutation) AuthProvidersIDs() (ids []int64) {
 func (m *UserMutation) ResetAuthProviders() {
 	m.auth_providers = nil
 	m.clearedauth_providers = false
+	m.removedauth_providers = nil
 }
 
 // Where appends a list predicates to the UserMutation builder.
@@ -1279,9 +1295,11 @@ func (m *UserMutation) AddedEdges() []string {
 func (m *UserMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case user.EdgeAuthProviders:
-		if id := m.auth_providers; id != nil {
-			return []ent.Value{*id}
+		ids := make([]ent.Value, 0, len(m.auth_providers))
+		for id := range m.auth_providers {
+			ids = append(ids, id)
 		}
+		return ids
 	}
 	return nil
 }
@@ -1289,12 +1307,23 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *UserMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
+	if m.removedauth_providers != nil {
+		edges = append(edges, user.EdgeAuthProviders)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *UserMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case user.EdgeAuthProviders:
+		ids := make([]ent.Value, 0, len(m.removedauth_providers))
+		for id := range m.removedauth_providers {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
@@ -1321,9 +1350,6 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *UserMutation) ClearEdge(name string) error {
 	switch name {
-	case user.EdgeAuthProviders:
-		m.ClearAuthProviders()
-		return nil
 	}
 	return fmt.Errorf("unknown User unique edge %s", name)
 }

@@ -75,7 +75,7 @@ func (_q *UserQuery) QueryAuthProviders() *AuthProviderQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(authprovider.Table, authprovider.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, user.AuthProvidersTable, user.AuthProvidersColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.AuthProvidersTable, user.AuthProvidersColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -394,8 +394,9 @@ func (_q *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		return nodes, nil
 	}
 	if query := _q.withAuthProviders; query != nil {
-		if err := _q.loadAuthProviders(ctx, query, nodes, nil,
-			func(n *User, e *AuthProvider) { n.Edges.AuthProviders = e }); err != nil {
+		if err := _q.loadAuthProviders(ctx, query, nodes,
+			func(n *User) { n.Edges.AuthProviders = []*AuthProvider{} },
+			func(n *User, e *AuthProvider) { n.Edges.AuthProviders = append(n.Edges.AuthProviders, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -408,6 +409,9 @@ func (_q *UserQuery) loadAuthProviders(ctx context.Context, query *AuthProviderQ
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
 	}
 	if len(query.ctx.Fields) > 0 {
 		query.ctx.AppendFieldOnce(authprovider.FieldUserID)

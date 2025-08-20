@@ -475,7 +475,7 @@ func HasAuthProviders() predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, AuthProvidersTable, AuthProvidersColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, AuthProvidersTable, AuthProvidersColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

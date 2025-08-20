@@ -85,23 +85,19 @@ func (_c *UserCreate) SetID(v int64) *UserCreate {
 	return _c
 }
 
-// SetAuthProvidersID sets the "auth_providers" edge to the AuthProvider entity by ID.
-func (_c *UserCreate) SetAuthProvidersID(id int64) *UserCreate {
-	_c.mutation.SetAuthProvidersID(id)
+// AddAuthProviderIDs adds the "auth_providers" edge to the AuthProvider entity by IDs.
+func (_c *UserCreate) AddAuthProviderIDs(ids ...int64) *UserCreate {
+	_c.mutation.AddAuthProviderIDs(ids...)
 	return _c
 }
 
-// SetNillableAuthProvidersID sets the "auth_providers" edge to the AuthProvider entity by ID if the given value is not nil.
-func (_c *UserCreate) SetNillableAuthProvidersID(id *int64) *UserCreate {
-	if id != nil {
-		_c = _c.SetAuthProvidersID(*id)
+// AddAuthProviders adds the "auth_providers" edges to the AuthProvider entity.
+func (_c *UserCreate) AddAuthProviders(v ...*AuthProvider) *UserCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return _c
-}
-
-// SetAuthProviders sets the "auth_providers" edge to the AuthProvider entity.
-func (_c *UserCreate) SetAuthProviders(v *AuthProvider) *UserCreate {
-	return _c.SetAuthProvidersID(v.ID)
+	return _c.AddAuthProviderIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -259,7 +255,7 @@ func (_c *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	}
 	if nodes := _c.mutation.AuthProvidersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   user.AuthProvidersTable,
 			Columns: []string{user.AuthProvidersColumn},
