@@ -31,7 +31,6 @@ func (r *authProviderRepo) Create(ctx context.Context, proType, id string, userI
 		SetProviderType(proType).
 		SetProviderID(id).
 		SetUser(userInfo).
-		SetUserID(userInfo.UserID).
 		Save(ctx)
 
 	return err

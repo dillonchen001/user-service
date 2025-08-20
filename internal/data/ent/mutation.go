@@ -39,8 +39,8 @@ type AuthProviderMutation struct {
 	provider_id   *string
 	created_at    *time.Time
 	clearedFields map[string]struct{}
-	user          *int64
-	cleareduser   bool
+	users         *int64
+	clearedusers  bool
 	done          bool
 	oldValue      func(context.Context) (*AuthProvider, error)
 	predicates    []predicate.AuthProvider
@@ -152,12 +152,12 @@ func (m *AuthProviderMutation) IDs(ctx context.Context) ([]int64, error) {
 
 // SetUserID sets the "user_id" field.
 func (m *AuthProviderMutation) SetUserID(i int64) {
-	m.user = &i
+	m.users = &i
 }
 
 // UserID returns the value of the "user_id" field in the mutation.
 func (m *AuthProviderMutation) UserID() (r int64, exists bool) {
-	v := m.user
+	v := m.users
 	if v == nil {
 		return
 	}
@@ -183,7 +183,7 @@ func (m *AuthProviderMutation) OldUserID(ctx context.Context) (v int64, err erro
 
 // ResetUserID resets all changes to the "user_id" field.
 func (m *AuthProviderMutation) ResetUserID() {
-	m.user = nil
+	m.users = nil
 }
 
 // SetProviderType sets the "provider_type" field.
@@ -294,31 +294,44 @@ func (m *AuthProviderMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
-// ClearUser clears the "user" edge to the User entity.
-func (m *AuthProviderMutation) ClearUser() {
-	m.cleareduser = true
+// SetUsersID sets the "users" edge to the User entity by id.
+func (m *AuthProviderMutation) SetUsersID(id int64) {
+	m.users = &id
+}
+
+// ClearUsers clears the "users" edge to the User entity.
+func (m *AuthProviderMutation) ClearUsers() {
+	m.clearedusers = true
 	m.clearedFields[authprovider.FieldUserID] = struct{}{}
 }
 
-// UserCleared reports if the "user" edge to the User entity was cleared.
-func (m *AuthProviderMutation) UserCleared() bool {
-	return m.cleareduser
+// UsersCleared reports if the "users" edge to the User entity was cleared.
+func (m *AuthProviderMutation) UsersCleared() bool {
+	return m.clearedusers
 }
 
-// UserIDs returns the "user" edge IDs in the mutation.
+// UsersID returns the "users" edge ID in the mutation.
+func (m *AuthProviderMutation) UsersID() (id int64, exists bool) {
+	if m.users != nil {
+		return *m.users, true
+	}
+	return
+}
+
+// UsersIDs returns the "users" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// UserID instead. It exists only for internal usage by the builders.
-func (m *AuthProviderMutation) UserIDs() (ids []int64) {
-	if id := m.user; id != nil {
+// UsersID instead. It exists only for internal usage by the builders.
+func (m *AuthProviderMutation) UsersIDs() (ids []int64) {
+	if id := m.users; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetUser resets all changes to the "user" edge.
-func (m *AuthProviderMutation) ResetUser() {
-	m.user = nil
-	m.cleareduser = false
+// ResetUsers resets all changes to the "users" edge.
+func (m *AuthProviderMutation) ResetUsers() {
+	m.users = nil
+	m.clearedusers = false
 }
 
 // Where appends a list predicates to the AuthProviderMutation builder.
@@ -356,7 +369,7 @@ func (m *AuthProviderMutation) Type() string {
 // AddedFields().
 func (m *AuthProviderMutation) Fields() []string {
 	fields := make([]string, 0, 4)
-	if m.user != nil {
+	if m.users != nil {
 		fields = append(fields, authprovider.FieldUserID)
 	}
 	if m.provider_type != nil {
@@ -509,8 +522,8 @@ func (m *AuthProviderMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AuthProviderMutation) AddedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.user != nil {
-		edges = append(edges, authprovider.EdgeUser)
+	if m.users != nil {
+		edges = append(edges, authprovider.EdgeUsers)
 	}
 	return edges
 }
@@ -519,8 +532,8 @@ func (m *AuthProviderMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *AuthProviderMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case authprovider.EdgeUser:
-		if id := m.user; id != nil {
+	case authprovider.EdgeUsers:
+		if id := m.users; id != nil {
 			return []ent.Value{*id}
 		}
 	}
@@ -542,8 +555,8 @@ func (m *AuthProviderMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AuthProviderMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.cleareduser {
-		edges = append(edges, authprovider.EdgeUser)
+	if m.clearedusers {
+		edges = append(edges, authprovider.EdgeUsers)
 	}
 	return edges
 }
@@ -552,8 +565,8 @@ func (m *AuthProviderMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *AuthProviderMutation) EdgeCleared(name string) bool {
 	switch name {
-	case authprovider.EdgeUser:
-		return m.cleareduser
+	case authprovider.EdgeUsers:
+		return m.clearedusers
 	}
 	return false
 }
@@ -562,8 +575,8 @@ func (m *AuthProviderMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *AuthProviderMutation) ClearEdge(name string) error {
 	switch name {
-	case authprovider.EdgeUser:
-		m.ClearUser()
+	case authprovider.EdgeUsers:
+		m.ClearUsers()
 		return nil
 	}
 	return fmt.Errorf("unknown AuthProvider unique edge %s", name)
@@ -573,8 +586,8 @@ func (m *AuthProviderMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *AuthProviderMutation) ResetEdge(name string) error {
 	switch name {
-	case authprovider.EdgeUser:
-		m.ResetUser()
+	case authprovider.EdgeUsers:
+		m.ResetUsers()
 		return nil
 	}
 	return fmt.Errorf("unknown AuthProvider edge %s", name)

@@ -19,7 +19,8 @@ func (User) Fields() []ent.Field {
 		field.Int64("id").
 			Unique(),
 		field.Int64("user_id").
-			Unique(),
+			Unique().
+			Positive(),
 		field.String("name").
 			MaxLen(100),
 		field.String("email").

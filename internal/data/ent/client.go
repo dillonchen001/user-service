@@ -316,15 +316,15 @@ func (c *AuthProviderClient) GetX(ctx context.Context, id int64) *AuthProvider {
 	return obj
 }
 
-// QueryUser queries the user edge of a AuthProvider.
-func (c *AuthProviderClient) QueryUser(_m *AuthProvider) *UserQuery {
+// QueryUsers queries the users edge of a AuthProvider.
+func (c *AuthProviderClient) QueryUsers(_m *AuthProvider) *UserQuery {
 	query := (&UserClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(authprovider.Table, authprovider.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, authprovider.UserTable, authprovider.UserColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, authprovider.UsersTable, authprovider.UsersColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil

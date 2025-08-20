@@ -85,9 +85,15 @@ func (_u *AuthProviderUpdate) SetNillableCreatedAt(v *time.Time) *AuthProviderUp
 	return _u
 }
 
-// SetUser sets the "user" edge to the User entity.
-func (_u *AuthProviderUpdate) SetUser(v *User) *AuthProviderUpdate {
-	return _u.SetUserID(v.ID)
+// SetUsersID sets the "users" edge to the User entity by ID.
+func (_u *AuthProviderUpdate) SetUsersID(id int64) *AuthProviderUpdate {
+	_u.mutation.SetUsersID(id)
+	return _u
+}
+
+// SetUsers sets the "users" edge to the User entity.
+func (_u *AuthProviderUpdate) SetUsers(v *User) *AuthProviderUpdate {
+	return _u.SetUsersID(v.ID)
 }
 
 // Mutation returns the AuthProviderMutation object of the builder.
@@ -95,9 +101,9 @@ func (_u *AuthProviderUpdate) Mutation() *AuthProviderMutation {
 	return _u.mutation
 }
 
-// ClearUser clears the "user" edge to the User entity.
-func (_u *AuthProviderUpdate) ClearUser() *AuthProviderUpdate {
-	_u.mutation.ClearUser()
+// ClearUsers clears the "users" edge to the User entity.
+func (_u *AuthProviderUpdate) ClearUsers() *AuthProviderUpdate {
+	_u.mutation.ClearUsers()
 	return _u
 }
 
@@ -130,6 +136,11 @@ func (_u *AuthProviderUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *AuthProviderUpdate) check() error {
+	if v, ok := _u.mutation.UserID(); ok {
+		if err := authprovider.UserIDValidator(v); err != nil {
+			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "AuthProvider.user_id": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.ProviderType(); ok {
 		if err := authprovider.ProviderTypeValidator(v); err != nil {
 			return &ValidationError{Name: "provider_type", err: fmt.Errorf(`ent: validator failed for field "AuthProvider.provider_type": %w`, err)}
@@ -140,8 +151,8 @@ func (_u *AuthProviderUpdate) check() error {
 			return &ValidationError{Name: "provider_id", err: fmt.Errorf(`ent: validator failed for field "AuthProvider.provider_id": %w`, err)}
 		}
 	}
-	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "AuthProvider.user"`)
+	if _u.mutation.UsersCleared() && len(_u.mutation.UsersIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "AuthProvider.users"`)
 	}
 	return nil
 }
@@ -167,12 +178,12 @@ func (_u *AuthProviderUpdate) sqlSave(ctx context.Context) (_node int, err error
 	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(authprovider.FieldCreatedAt, field.TypeTime, value)
 	}
-	if _u.mutation.UserCleared() {
+	if _u.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
-			Table:   authprovider.UserTable,
-			Columns: []string{authprovider.UserColumn},
+			Table:   authprovider.UsersTable,
+			Columns: []string{authprovider.UsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -180,12 +191,12 @@ func (_u *AuthProviderUpdate) sqlSave(ctx context.Context) (_node int, err error
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
-			Table:   authprovider.UserTable,
-			Columns: []string{authprovider.UserColumn},
+			Table:   authprovider.UsersTable,
+			Columns: []string{authprovider.UsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -272,9 +283,15 @@ func (_u *AuthProviderUpdateOne) SetNillableCreatedAt(v *time.Time) *AuthProvide
 	return _u
 }
 
-// SetUser sets the "user" edge to the User entity.
-func (_u *AuthProviderUpdateOne) SetUser(v *User) *AuthProviderUpdateOne {
-	return _u.SetUserID(v.ID)
+// SetUsersID sets the "users" edge to the User entity by ID.
+func (_u *AuthProviderUpdateOne) SetUsersID(id int64) *AuthProviderUpdateOne {
+	_u.mutation.SetUsersID(id)
+	return _u
+}
+
+// SetUsers sets the "users" edge to the User entity.
+func (_u *AuthProviderUpdateOne) SetUsers(v *User) *AuthProviderUpdateOne {
+	return _u.SetUsersID(v.ID)
 }
 
 // Mutation returns the AuthProviderMutation object of the builder.
@@ -282,9 +299,9 @@ func (_u *AuthProviderUpdateOne) Mutation() *AuthProviderMutation {
 	return _u.mutation
 }
 
-// ClearUser clears the "user" edge to the User entity.
-func (_u *AuthProviderUpdateOne) ClearUser() *AuthProviderUpdateOne {
-	_u.mutation.ClearUser()
+// ClearUsers clears the "users" edge to the User entity.
+func (_u *AuthProviderUpdateOne) ClearUsers() *AuthProviderUpdateOne {
+	_u.mutation.ClearUsers()
 	return _u
 }
 
@@ -330,6 +347,11 @@ func (_u *AuthProviderUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *AuthProviderUpdateOne) check() error {
+	if v, ok := _u.mutation.UserID(); ok {
+		if err := authprovider.UserIDValidator(v); err != nil {
+			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "AuthProvider.user_id": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.ProviderType(); ok {
 		if err := authprovider.ProviderTypeValidator(v); err != nil {
 			return &ValidationError{Name: "provider_type", err: fmt.Errorf(`ent: validator failed for field "AuthProvider.provider_type": %w`, err)}
@@ -340,8 +362,8 @@ func (_u *AuthProviderUpdateOne) check() error {
 			return &ValidationError{Name: "provider_id", err: fmt.Errorf(`ent: validator failed for field "AuthProvider.provider_id": %w`, err)}
 		}
 	}
-	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "AuthProvider.user"`)
+	if _u.mutation.UsersCleared() && len(_u.mutation.UsersIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "AuthProvider.users"`)
 	}
 	return nil
 }
@@ -384,12 +406,12 @@ func (_u *AuthProviderUpdateOne) sqlSave(ctx context.Context) (_node *AuthProvid
 	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(authprovider.FieldCreatedAt, field.TypeTime, value)
 	}
-	if _u.mutation.UserCleared() {
+	if _u.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
-			Table:   authprovider.UserTable,
-			Columns: []string{authprovider.UserColumn},
+			Table:   authprovider.UsersTable,
+			Columns: []string{authprovider.UsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -397,12 +419,12 @@ func (_u *AuthProviderUpdateOne) sqlSave(ctx context.Context) (_node *AuthProvid
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
-			Table:   authprovider.UserTable,
-			Columns: []string{authprovider.UserColumn},
+			Table:   authprovider.UsersTable,
+			Columns: []string{authprovider.UsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),

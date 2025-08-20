@@ -59,9 +59,15 @@ func (_c *AuthProviderCreate) SetID(v int64) *AuthProviderCreate {
 	return _c
 }
 
-// SetUser sets the "user" edge to the User entity.
-func (_c *AuthProviderCreate) SetUser(v *User) *AuthProviderCreate {
-	return _c.SetUserID(v.ID)
+// SetUsersID sets the "users" edge to the User entity by ID.
+func (_c *AuthProviderCreate) SetUsersID(id int64) *AuthProviderCreate {
+	_c.mutation.SetUsersID(id)
+	return _c
+}
+
+// SetUsers sets the "users" edge to the User entity.
+func (_c *AuthProviderCreate) SetUsers(v *User) *AuthProviderCreate {
+	return _c.SetUsersID(v.ID)
 }
 
 // Mutation returns the AuthProviderMutation object of the builder.
@@ -110,6 +116,11 @@ func (_c *AuthProviderCreate) check() error {
 	if _, ok := _c.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "AuthProvider.user_id"`)}
 	}
+	if v, ok := _c.mutation.UserID(); ok {
+		if err := authprovider.UserIDValidator(v); err != nil {
+			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "AuthProvider.user_id": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.ProviderType(); !ok {
 		return &ValidationError{Name: "provider_type", err: errors.New(`ent: missing required field "AuthProvider.provider_type"`)}
 	}
@@ -129,8 +140,8 @@ func (_c *AuthProviderCreate) check() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AuthProvider.created_at"`)}
 	}
-	if len(_c.mutation.UserIDs()) == 0 {
-		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "AuthProvider.user"`)}
+	if len(_c.mutation.UsersIDs()) == 0 {
+		return &ValidationError{Name: "users", err: errors.New(`ent: missing required edge "AuthProvider.users"`)}
 	}
 	return nil
 }
@@ -176,12 +187,12 @@ func (_c *AuthProviderCreate) createSpec() (*AuthProvider, *sqlgraph.CreateSpec)
 		_spec.SetField(authprovider.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := _c.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.UsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
-			Table:   authprovider.UserTable,
-			Columns: []string{authprovider.UserColumn},
+			Table:   authprovider.UsersTable,
+			Columns: []string{authprovider.UsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),

@@ -15,6 +15,10 @@ import (
 func init() {
 	authproviderFields := schema.AuthProvider{}.Fields()
 	_ = authproviderFields
+	// authproviderDescUserID is the schema descriptor for user_id field.
+	authproviderDescUserID := authproviderFields[1].Descriptor()
+	// authprovider.UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
+	authprovider.UserIDValidator = authproviderDescUserID.Validators[0].(func(int64) error)
 	// authproviderDescProviderType is the schema descriptor for provider_type field.
 	authproviderDescProviderType := authproviderFields[2].Descriptor()
 	// authprovider.ProviderTypeValidator is a validator for the "provider_type" field. It is called by the builders before save.
@@ -29,6 +33,10 @@ func init() {
 	authprovider.DefaultCreatedAt = authproviderDescCreatedAt.Default.(func() time.Time)
 	userFields := schema.User{}.Fields()
 	_ = userFields
+	// userDescUserID is the schema descriptor for user_id field.
+	userDescUserID := userFields[1].Descriptor()
+	// user.UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
+	user.UserIDValidator = userDescUserID.Validators[0].(func(int64) error)
 	// userDescName is the schema descriptor for name field.
 	userDescName := userFields[2].Descriptor()
 	// user.NameValidator is a validator for the "name" field. It is called by the builders before save.
