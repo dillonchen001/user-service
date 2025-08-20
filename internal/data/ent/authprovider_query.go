@@ -298,12 +298,12 @@ func (_q *AuthProviderQuery) WithUser(opts ...func(*UserQuery)) *AuthProviderQue
 // Example:
 //
 //	var v []struct {
-//		UserID int64 `json:"user_id,omitempty"`
+//		UID int64 `json:"uid,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.AuthProvider.Query().
-//		GroupBy(authprovider.FieldUserID).
+//		GroupBy(authprovider.FieldUID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *AuthProviderQuery) GroupBy(field string, fields ...string) *AuthProviderGroupBy {
@@ -321,11 +321,11 @@ func (_q *AuthProviderQuery) GroupBy(field string, fields ...string) *AuthProvid
 // Example:
 //
 //	var v []struct {
-//		UserID int64 `json:"user_id,omitempty"`
+//		UID int64 `json:"uid,omitempty"`
 //	}
 //
 //	client.AuthProvider.Query().
-//		Select(authprovider.FieldUserID).
+//		Select(authprovider.FieldUID).
 //		Scan(ctx, &v)
 func (_q *AuthProviderQuery) Select(fields ...string) *AuthProviderSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
@@ -405,7 +405,7 @@ func (_q *AuthProviderQuery) loadUser(ctx context.Context, query *UserQuery, nod
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*AuthProvider)
 	for i := range nodes {
-		fk := nodes[i].UserID
+		fk := nodes[i].UID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -422,7 +422,7 @@ func (_q *AuthProviderQuery) loadUser(ctx context.Context, query *UserQuery, nod
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "uid" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -457,7 +457,7 @@ func (_q *AuthProviderQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 		if _q.withUser != nil {
-			_spec.Node.AddColumnOnce(authprovider.FieldUserID)
+			_spec.Node.AddColumnOnce(authprovider.FieldUID)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

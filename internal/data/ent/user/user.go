@@ -38,7 +38,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "authprovider" package.
 	AuthProvidersInverseTable = "auth_providers"
 	// AuthProvidersColumn is the table column denoting the auth_providers relation/edge.
-	AuthProvidersColumn = "user_id"
+	AuthProvidersColumn = "uid"
 )
 
 // Columns holds all SQL columns for user fields.

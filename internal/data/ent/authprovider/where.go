@@ -55,9 +55,9 @@ func IDLTE(id int64) predicate.AuthProvider {
 	return predicate.AuthProvider(sql.FieldLTE(FieldID, id))
 }
 
-// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
-func UserID(v int64) predicate.AuthProvider {
-	return predicate.AuthProvider(sql.FieldEQ(FieldUserID, v))
+// UID applies equality check predicate on the "uid" field. It's identical to UIDEQ.
+func UID(v int64) predicate.AuthProvider {
+	return predicate.AuthProvider(sql.FieldEQ(FieldUID, v))
 }
 
 // ProviderType applies equality check predicate on the "provider_type" field. It's identical to ProviderTypeEQ.
@@ -75,24 +75,24 @@ func CreatedAt(v time.Time) predicate.AuthProvider {
 	return predicate.AuthProvider(sql.FieldEQ(FieldCreatedAt, v))
 }
 
-// UserIDEQ applies the EQ predicate on the "user_id" field.
-func UserIDEQ(v int64) predicate.AuthProvider {
-	return predicate.AuthProvider(sql.FieldEQ(FieldUserID, v))
+// UIDEQ applies the EQ predicate on the "uid" field.
+func UIDEQ(v int64) predicate.AuthProvider {
+	return predicate.AuthProvider(sql.FieldEQ(FieldUID, v))
 }
 
-// UserIDNEQ applies the NEQ predicate on the "user_id" field.
-func UserIDNEQ(v int64) predicate.AuthProvider {
-	return predicate.AuthProvider(sql.FieldNEQ(FieldUserID, v))
+// UIDNEQ applies the NEQ predicate on the "uid" field.
+func UIDNEQ(v int64) predicate.AuthProvider {
+	return predicate.AuthProvider(sql.FieldNEQ(FieldUID, v))
 }
 
-// UserIDIn applies the In predicate on the "user_id" field.
-func UserIDIn(vs ...int64) predicate.AuthProvider {
-	return predicate.AuthProvider(sql.FieldIn(FieldUserID, vs...))
+// UIDIn applies the In predicate on the "uid" field.
+func UIDIn(vs ...int64) predicate.AuthProvider {
+	return predicate.AuthProvider(sql.FieldIn(FieldUID, vs...))
 }
 
-// UserIDNotIn applies the NotIn predicate on the "user_id" field.
-func UserIDNotIn(vs ...int64) predicate.AuthProvider {
-	return predicate.AuthProvider(sql.FieldNotIn(FieldUserID, vs...))
+// UIDNotIn applies the NotIn predicate on the "uid" field.
+func UIDNotIn(vs ...int64) predicate.AuthProvider {
+	return predicate.AuthProvider(sql.FieldNotIn(FieldUID, vs...))
 }
 
 // ProviderTypeEQ applies the EQ predicate on the "provider_type" field.

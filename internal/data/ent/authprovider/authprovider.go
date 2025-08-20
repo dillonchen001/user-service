@@ -14,8 +14,8 @@ const (
 	Label = "auth_provider"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldUserID holds the string denoting the user_id field in the database.
-	FieldUserID = "user_id"
+	// FieldUID holds the string denoting the uid field in the database.
+	FieldUID = "uid"
 	// FieldProviderType holds the string denoting the provider_type field in the database.
 	FieldProviderType = "provider_type"
 	// FieldProviderID holds the string denoting the provider_id field in the database.
@@ -32,13 +32,13 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "user" package.
 	UserInverseTable = "users"
 	// UserColumn is the table column denoting the user relation/edge.
-	UserColumn = "user_id"
+	UserColumn = "uid"
 )
 
 // Columns holds all SQL columns for authprovider fields.
 var Columns = []string{
 	FieldID,
-	FieldUserID,
+	FieldUID,
 	FieldProviderType,
 	FieldProviderID,
 	FieldCreatedAt,
@@ -55,8 +55,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
-	UserIDValidator func(int64) error
+	// UIDValidator is a validator for the "uid" field. It is called by the builders before save.
+	UIDValidator func(int64) error
 	// ProviderTypeValidator is a validator for the "provider_type" field. It is called by the builders before save.
 	ProviderTypeValidator func(string) error
 	// ProviderIDValidator is a validator for the "provider_id" field. It is called by the builders before save.
@@ -73,9 +73,9 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByUserID orders the results by the user_id field.
-func ByUserID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUserID, opts...).ToFunc()
+// ByUID orders the results by the uid field.
+func ByUID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUID, opts...).ToFunc()
 }
 
 // ByProviderType orders the results by the provider_type field.

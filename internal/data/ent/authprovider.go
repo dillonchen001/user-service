@@ -18,8 +18,8 @@ type AuthProvider struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
-	// UserID holds the value of the "user_id" field.
-	UserID int64 `json:"user_id,omitempty"`
+	// UID holds the value of the "uid" field.
+	UID int64 `json:"uid,omitempty"`
 	// ProviderType holds the value of the "provider_type" field.
 	ProviderType string `json:"provider_type,omitempty"`
 	// ProviderID holds the value of the "provider_id" field.
@@ -57,7 +57,7 @@ func (*AuthProvider) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case authprovider.FieldID, authprovider.FieldUserID:
+		case authprovider.FieldID, authprovider.FieldUID:
 			values[i] = new(sql.NullInt64)
 		case authprovider.FieldProviderType, authprovider.FieldProviderID:
 			values[i] = new(sql.NullString)
@@ -84,11 +84,11 @@ func (_m *AuthProvider) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
-		case authprovider.FieldUserID:
+		case authprovider.FieldUID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field user_id", values[i])
+				return fmt.Errorf("unexpected type %T for field uid", values[i])
 			} else if value.Valid {
-				_m.UserID = value.Int64
+				_m.UID = value.Int64
 			}
 		case authprovider.FieldProviderType:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -149,8 +149,8 @@ func (_m *AuthProvider) String() string {
 	var builder strings.Builder
 	builder.WriteString("AuthProvider(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
-	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
+	builder.WriteString("uid=")
+	builder.WriteString(fmt.Sprintf("%v", _m.UID))
 	builder.WriteString(", ")
 	builder.WriteString("provider_type=")
 	builder.WriteString(_m.ProviderType)

@@ -414,7 +414,7 @@ func (_q *UserQuery) loadAuthProviders(ctx context.Context, query *AuthProviderQ
 		}
 	}
 	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(authprovider.FieldUserID)
+		query.ctx.AppendFieldOnce(authprovider.FieldUID)
 	}
 	query.Where(predicate.AuthProvider(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(user.AuthProvidersColumn), fks...))
@@ -424,10 +424,10 @@ func (_q *UserQuery) loadAuthProviders(ctx context.Context, query *AuthProviderQ
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.UserID
+		fk := n.UID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "user_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "uid" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

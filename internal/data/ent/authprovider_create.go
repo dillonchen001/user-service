@@ -21,9 +21,9 @@ type AuthProviderCreate struct {
 	hooks    []Hook
 }
 
-// SetUserID sets the "user_id" field.
-func (_c *AuthProviderCreate) SetUserID(v int64) *AuthProviderCreate {
-	_c.mutation.SetUserID(v)
+// SetUID sets the "uid" field.
+func (_c *AuthProviderCreate) SetUID(v int64) *AuthProviderCreate {
+	_c.mutation.SetUID(v)
 	return _c
 }
 
@@ -56,6 +56,12 @@ func (_c *AuthProviderCreate) SetNillableCreatedAt(v *time.Time) *AuthProviderCr
 // SetID sets the "id" field.
 func (_c *AuthProviderCreate) SetID(v int64) *AuthProviderCreate {
 	_c.mutation.SetID(v)
+	return _c
+}
+
+// SetUserID sets the "user" edge to the User entity by ID.
+func (_c *AuthProviderCreate) SetUserID(id int64) *AuthProviderCreate {
+	_c.mutation.SetUserID(id)
 	return _c
 }
 
@@ -107,12 +113,12 @@ func (_c *AuthProviderCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *AuthProviderCreate) check() error {
-	if _, ok := _c.mutation.UserID(); !ok {
-		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "AuthProvider.user_id"`)}
+	if _, ok := _c.mutation.UID(); !ok {
+		return &ValidationError{Name: "uid", err: errors.New(`ent: missing required field "AuthProvider.uid"`)}
 	}
-	if v, ok := _c.mutation.UserID(); ok {
-		if err := authprovider.UserIDValidator(v); err != nil {
-			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "AuthProvider.user_id": %w`, err)}
+	if v, ok := _c.mutation.UID(); ok {
+		if err := authprovider.UIDValidator(v); err != nil {
+			return &ValidationError{Name: "uid", err: fmt.Errorf(`ent: validator failed for field "AuthProvider.uid": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.ProviderType(); !ok {
@@ -195,7 +201,7 @@ func (_c *AuthProviderCreate) createSpec() (*AuthProvider, *sqlgraph.CreateSpec)
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.UserID = nodes[0]
+		_node.UID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

@@ -14,7 +14,7 @@ var (
 		{Name: "provider_type", Type: field.TypeString, Size: 20},
 		{Name: "provider_id", Type: field.TypeString, Size: 255},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "user_id", Type: field.TypeInt64},
+		{Name: "uid", Type: field.TypeInt64},
 	}
 	// AuthProvidersTable holds the schema information for the "auth_providers" table.
 	AuthProvidersTable = &schema.Table{

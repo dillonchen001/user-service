@@ -29,16 +29,16 @@ func (_u *AuthProviderUpdate) Where(ps ...predicate.AuthProvider) *AuthProviderU
 	return _u
 }
 
-// SetUserID sets the "user_id" field.
-func (_u *AuthProviderUpdate) SetUserID(v int64) *AuthProviderUpdate {
-	_u.mutation.SetUserID(v)
+// SetUID sets the "uid" field.
+func (_u *AuthProviderUpdate) SetUID(v int64) *AuthProviderUpdate {
+	_u.mutation.SetUID(v)
 	return _u
 }
 
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *AuthProviderUpdate) SetNillableUserID(v *int64) *AuthProviderUpdate {
+// SetNillableUID sets the "uid" field if the given value is not nil.
+func (_u *AuthProviderUpdate) SetNillableUID(v *int64) *AuthProviderUpdate {
 	if v != nil {
-		_u.SetUserID(*v)
+		_u.SetUID(*v)
 	}
 	return _u
 }
@@ -82,6 +82,12 @@ func (_u *AuthProviderUpdate) SetNillableCreatedAt(v *time.Time) *AuthProviderUp
 	if v != nil {
 		_u.SetCreatedAt(*v)
 	}
+	return _u
+}
+
+// SetUserID sets the "user" edge to the User entity by ID.
+func (_u *AuthProviderUpdate) SetUserID(id int64) *AuthProviderUpdate {
+	_u.mutation.SetUserID(id)
 	return _u
 }
 
@@ -130,9 +136,9 @@ func (_u *AuthProviderUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *AuthProviderUpdate) check() error {
-	if v, ok := _u.mutation.UserID(); ok {
-		if err := authprovider.UserIDValidator(v); err != nil {
-			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "AuthProvider.user_id": %w`, err)}
+	if v, ok := _u.mutation.UID(); ok {
+		if err := authprovider.UIDValidator(v); err != nil {
+			return &ValidationError{Name: "uid", err: fmt.Errorf(`ent: validator failed for field "AuthProvider.uid": %w`, err)}
 		}
 	}
 	if v, ok := _u.mutation.ProviderType(); ok {
@@ -221,16 +227,16 @@ type AuthProviderUpdateOne struct {
 	mutation *AuthProviderMutation
 }
 
-// SetUserID sets the "user_id" field.
-func (_u *AuthProviderUpdateOne) SetUserID(v int64) *AuthProviderUpdateOne {
-	_u.mutation.SetUserID(v)
+// SetUID sets the "uid" field.
+func (_u *AuthProviderUpdateOne) SetUID(v int64) *AuthProviderUpdateOne {
+	_u.mutation.SetUID(v)
 	return _u
 }
 
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *AuthProviderUpdateOne) SetNillableUserID(v *int64) *AuthProviderUpdateOne {
+// SetNillableUID sets the "uid" field if the given value is not nil.
+func (_u *AuthProviderUpdateOne) SetNillableUID(v *int64) *AuthProviderUpdateOne {
 	if v != nil {
-		_u.SetUserID(*v)
+		_u.SetUID(*v)
 	}
 	return _u
 }
@@ -274,6 +280,12 @@ func (_u *AuthProviderUpdateOne) SetNillableCreatedAt(v *time.Time) *AuthProvide
 	if v != nil {
 		_u.SetCreatedAt(*v)
 	}
+	return _u
+}
+
+// SetUserID sets the "user" edge to the User entity by ID.
+func (_u *AuthProviderUpdateOne) SetUserID(id int64) *AuthProviderUpdateOne {
+	_u.mutation.SetUserID(id)
 	return _u
 }
 
@@ -335,9 +347,9 @@ func (_u *AuthProviderUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *AuthProviderUpdateOne) check() error {
-	if v, ok := _u.mutation.UserID(); ok {
-		if err := authprovider.UserIDValidator(v); err != nil {
-			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "AuthProvider.user_id": %w`, err)}
+	if v, ok := _u.mutation.UID(); ok {
+		if err := authprovider.UIDValidator(v); err != nil {
+			return &ValidationError{Name: "uid", err: fmt.Errorf(`ent: validator failed for field "AuthProvider.uid": %w`, err)}
 		}
 	}
 	if v, ok := _u.mutation.ProviderType(); ok {

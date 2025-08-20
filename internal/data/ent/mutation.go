@@ -150,13 +150,13 @@ func (m *AuthProviderMutation) IDs(ctx context.Context) ([]int64, error) {
 	}
 }
 
-// SetUserID sets the "user_id" field.
-func (m *AuthProviderMutation) SetUserID(i int64) {
+// SetUID sets the "uid" field.
+func (m *AuthProviderMutation) SetUID(i int64) {
 	m.user = &i
 }
 
-// UserID returns the value of the "user_id" field in the mutation.
-func (m *AuthProviderMutation) UserID() (r int64, exists bool) {
+// UID returns the value of the "uid" field in the mutation.
+func (m *AuthProviderMutation) UID() (r int64, exists bool) {
 	v := m.user
 	if v == nil {
 		return
@@ -164,25 +164,25 @@ func (m *AuthProviderMutation) UserID() (r int64, exists bool) {
 	return *v, true
 }
 
-// OldUserID returns the old "user_id" field's value of the AuthProvider entity.
+// OldUID returns the old "uid" field's value of the AuthProvider entity.
 // If the AuthProvider object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AuthProviderMutation) OldUserID(ctx context.Context) (v int64, err error) {
+func (m *AuthProviderMutation) OldUID(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+		return v, errors.New("OldUID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUserID requires an ID field in the mutation")
+		return v, errors.New("OldUID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+		return v, fmt.Errorf("querying old value for OldUID: %w", err)
 	}
-	return oldValue.UserID, nil
+	return oldValue.UID, nil
 }
 
-// ResetUserID resets all changes to the "user_id" field.
-func (m *AuthProviderMutation) ResetUserID() {
+// ResetUID resets all changes to the "uid" field.
+func (m *AuthProviderMutation) ResetUID() {
 	m.user = nil
 }
 
@@ -294,15 +294,28 @@ func (m *AuthProviderMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// SetUserID sets the "user" edge to the User entity by id.
+func (m *AuthProviderMutation) SetUserID(id int64) {
+	m.user = &id
+}
+
 // ClearUser clears the "user" edge to the User entity.
 func (m *AuthProviderMutation) ClearUser() {
 	m.cleareduser = true
-	m.clearedFields[authprovider.FieldUserID] = struct{}{}
+	m.clearedFields[authprovider.FieldUID] = struct{}{}
 }
 
 // UserCleared reports if the "user" edge to the User entity was cleared.
 func (m *AuthProviderMutation) UserCleared() bool {
 	return m.cleareduser
+}
+
+// UserID returns the "user" edge ID in the mutation.
+func (m *AuthProviderMutation) UserID() (id int64, exists bool) {
+	if m.user != nil {
+		return *m.user, true
+	}
+	return
 }
 
 // UserIDs returns the "user" edge IDs in the mutation.
@@ -357,7 +370,7 @@ func (m *AuthProviderMutation) Type() string {
 func (m *AuthProviderMutation) Fields() []string {
 	fields := make([]string, 0, 4)
 	if m.user != nil {
-		fields = append(fields, authprovider.FieldUserID)
+		fields = append(fields, authprovider.FieldUID)
 	}
 	if m.provider_type != nil {
 		fields = append(fields, authprovider.FieldProviderType)
@@ -376,8 +389,8 @@ func (m *AuthProviderMutation) Fields() []string {
 // schema.
 func (m *AuthProviderMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case authprovider.FieldUserID:
-		return m.UserID()
+	case authprovider.FieldUID:
+		return m.UID()
 	case authprovider.FieldProviderType:
 		return m.ProviderType()
 	case authprovider.FieldProviderID:
@@ -393,8 +406,8 @@ func (m *AuthProviderMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *AuthProviderMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case authprovider.FieldUserID:
-		return m.OldUserID(ctx)
+	case authprovider.FieldUID:
+		return m.OldUID(ctx)
 	case authprovider.FieldProviderType:
 		return m.OldProviderType(ctx)
 	case authprovider.FieldProviderID:
@@ -410,12 +423,12 @@ func (m *AuthProviderMutation) OldField(ctx context.Context, name string) (ent.V
 // type.
 func (m *AuthProviderMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case authprovider.FieldUserID:
+	case authprovider.FieldUID:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUserID(v)
+		m.SetUID(v)
 		return nil
 	case authprovider.FieldProviderType:
 		v, ok := value.(string)
@@ -490,8 +503,8 @@ func (m *AuthProviderMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *AuthProviderMutation) ResetField(name string) error {
 	switch name {
-	case authprovider.FieldUserID:
-		m.ResetUserID()
+	case authprovider.FieldUID:
+		m.ResetUID()
 		return nil
 	case authprovider.FieldProviderType:
 		m.ResetProviderType()
